@@ -1,4 +1,4 @@
-package com.twolattes.json;
+package com.twolattes.json.nativetypes;
 
 import static com.twolattes.json.Json.FALSE;
 import static com.twolattes.json.Json.NULL;
@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+
+import com.twolattes.json.Marshaller;
 
 public class JavaTypeUnmarshallingTest {
 

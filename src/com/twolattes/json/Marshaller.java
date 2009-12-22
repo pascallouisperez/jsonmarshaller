@@ -9,7 +9,7 @@ import com.twolattes.json.Json.Value;
 /**
  * A thread-safe <a href="http://www.json.org/">JSON</a> marshaller.
  *
- * @param T the type that this marshaller marshalls and unmarshalls
+ * @param <T> the type that this marshaller marshalls and unmarshalls
  */
 public interface Marshaller<T> {
 

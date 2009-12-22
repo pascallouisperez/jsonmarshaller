@@ -14,6 +14,8 @@ import com.twolattes.json.inheritance2.Inheritance2Test;
 import com.twolattes.json.inheritance3.Inheritance3Test;
 import com.twolattes.json.inheritanceerror.InheritanceErrorTest;
 import com.twolattes.json.nativetypes.BigDecimalTest;
+import com.twolattes.json.nativetypes.JavaTypeMarshallingTest;
+import com.twolattes.json.nativetypes.JavaTypeUnmarshallingTest;
 import com.twolattes.json.nativetypes.LiteralsTest;
 import com.twolattes.json.optional.OptionalTest;
 import com.twolattes.json.types.TypesTest;
@@ -29,6 +31,8 @@ import com.twolattes.json.visibility2.Visibility2Test;
   MarshallerTest.class,
   EntityMarshallingTest.class,
   EntityUnmarshallingTest.class,
+  JavaTypeMarshallingTest.class,
+  JavaTypeUnmarshallingTest.class,
   EntityClassVisitorTest.class,
   TypesTest.class,
   URLTypeTest.class,

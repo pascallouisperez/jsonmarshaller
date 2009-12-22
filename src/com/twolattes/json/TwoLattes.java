@@ -7,9 +7,7 @@ import static com.twolattes.json.CharacterDescriptor.CHARARACTER_DESC;
 import static com.twolattes.json.DoubleDescriptor.DOUBLE_DESC;
 import static com.twolattes.json.FloatDescriptor.FLOAT_DESC;
 import static com.twolattes.json.IntegerDescriptor.INT_DESC;
-import static com.twolattes.json.JsonVisitor.BOOLEANS_ONLY;
-import static com.twolattes.json.JsonVisitor.NUMBERS_ONLY;
-import static com.twolattes.json.JsonVisitor.STRINGS_ONLY;
+import static com.twolattes.json.Json.NULL;
 import static com.twolattes.json.LongDescriptor.LONG_DESC;
 import static com.twolattes.json.ShortDescriptor.SHORT_DESC;
 import static com.twolattes.json.StringDescriptor.STRING_DESC;
@@ -24,6 +22,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.twolattes.json.JsonVisitor.Illegal;
 import com.twolattes.json.types.JsonType;
 
 /**
@@ -33,6 +32,39 @@ import com.twolattes.json.types.JsonType;
 public final class TwoLattes {
 
   /* don't instantiate */ private TwoLattes() {}
+
+  static final JsonVisitor<Json.String> STRINGS_ONLY = new Illegal<Json.String>() {
+    @Override
+    public Json.String caseNull() {
+      return NULL;
+    }
+    @Override
+    public Json.String caseString(Json.String string) {
+      return string;
+    }
+  };
+
+  static final JsonVisitor<Json.Number> NUMBERS_ONLY = new Illegal<Json.Number>() {
+    @Override
+    public Json.Number caseNull() {
+      return NULL;
+    }
+    @Override
+    public Json.Number caseNumber(Json.Number number) {
+      return number;
+    }
+  };
+
+  static final JsonVisitor<Json.Boolean> BOOLEANS_ONLY = new Illegal<Json.Boolean>() {
+    @Override
+    public Json.Boolean caseNull() {
+      return NULL;
+    }
+    @Override
+    public Json.Boolean caseBoolean(Json.Boolean bool) {
+      return bool;
+    }
+  };
 
   private static final Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> map = makeMap();
   private static Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> makeMap() {
