@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.twolattes.json.types.JsonType;
+
 class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
 
   private final EntityDescriptor<T> descriptor;
@@ -16,7 +18,9 @@ class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
   private final Class<T> clazz;
 
   @SuppressWarnings("unchecked")
-  EntityMarshallerImpl(Class<T> clazz, Map<Type, Class<?>> types) {
+  EntityMarshallerImpl(
+      Class<T> clazz,
+      Map<Type, Class<? extends JsonType<?, ?>>> types) {
     try {
       this.clazz = clazz;
       Pair<? extends EntityDescriptor, Entity> pair =

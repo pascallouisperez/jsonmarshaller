@@ -25,7 +25,7 @@ class EntityFieldVisitor extends EmptyVisitor implements FieldVisitor {
   private final EntityClassVisitor classVisitor;
   private boolean isJsonValue = false;
   private final EntityDescriptorStore store;
-  private final Map<Type, Class<?>> types;
+  private final Map<Type, Class<? extends JsonType<?, ?>>> types;
   final AbstractFieldDescriptor fieldDescriptor;
   Boolean shouldInline;
   Boolean shouldEmbed;
@@ -33,7 +33,7 @@ class EntityFieldVisitor extends EmptyVisitor implements FieldVisitor {
 
   public EntityFieldVisitor(EntityClassVisitor visitor, Field field,
       String signature, EntityDescriptorStore store,
-      Map<Type, Class<?>> types) {
+      Map<Type, Class<? extends JsonType<?, ?>>> types) {
     this.classVisitor = visitor;
     this.field = field;
     this.signature = signature;
@@ -67,7 +67,7 @@ class EntityFieldVisitor extends EmptyVisitor implements FieldVisitor {
       JsonType<?, ?> type = fieldDescriptor.getType();
       if (type == null && types.containsKey(field.getType())) {
         entityDescriptor = new UserTypeDescriptor(
-            (JsonType) Instantiator.newInstance(types.get(field.getType())));
+            Instantiator.newInstance(types.get(field.getType())));
       } else if (type == null) {
           Pair<Descriptor, Entity> pair = new DescriptorFactory().create(
               signature, store, fieldDescriptor, types);

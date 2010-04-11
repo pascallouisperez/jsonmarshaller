@@ -11,6 +11,8 @@ import java.util.Set;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.signature.SignatureReader;
 
+import com.twolattes.json.types.JsonType;
+
 /**
  * An {@link EntityDescriptor} factory.
  */
@@ -22,7 +24,7 @@ class DescriptorFactory {
   @SuppressWarnings("unchecked")
   <T> Pair<? extends EntityDescriptor, Entity> create(
       Class<?> c, EntityDescriptorStore store,
-      Map<Type, Class<?>> types) throws IOException {
+      Map<Type, Class<? extends JsonType<?, ?>>> types) throws IOException {
 
     // verifying that the class is an entity
     Entity annotation = c.getAnnotation(Entity.class);
@@ -88,7 +90,7 @@ class DescriptorFactory {
   @SuppressWarnings("unchecked")
   private <T> ConcreteEntityDescriptor<T> createConcreteEntityDescriptor(
       Class<?> c, EntityDescriptorStore store,
-      Map<Type, Class<?>> types) throws IOException {
+      Map<Type, Class<? extends JsonType<?, ?>>> types) throws IOException {
     // parent of the entity
     Class<?> parentClass = c.getSuperclass();
     ConcreteEntityDescriptor<?> parent = null;
@@ -153,8 +155,11 @@ class DescriptorFactory {
    * {@code Ljava/lang/String;}.
    */
   @SuppressWarnings("unchecked")
-  Pair<Descriptor, Entity> create(String signature, EntityDescriptorStore store,
-      FieldDescriptor fieldDescriptor, Map<Type, Class<?>> types) {
+  Pair<Descriptor, Entity> create(
+      String signature,
+      EntityDescriptorStore store,
+      FieldDescriptor fieldDescriptor,
+      Map<Type, Class<? extends JsonType<?, ?>>> types) {
     SignatureReader r = new SignatureReader(signature);
     EntitySignatureVisitor entitySignatureVisitor =
         new EntitySignatureVisitor(signature, store, fieldDescriptor, types);

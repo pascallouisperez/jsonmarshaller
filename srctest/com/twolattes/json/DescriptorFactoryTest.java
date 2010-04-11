@@ -14,6 +14,8 @@ import java.util.HashMap;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.twolattes.json.types.JsonType;
+
 
 public class DescriptorFactoryTest {
   @Test(expected = IllegalArgumentException.class)
@@ -230,6 +232,6 @@ public class DescriptorFactoryTest {
   private EntityDescriptor<?> create(Class<?> clazz) throws IOException {
     return new DescriptorFactory().create(
         clazz, new DescriptorFactory.EntityDescriptorStore(),
-        new HashMap<Type, Class<?>>()).left;
+        new HashMap<Type, Class<? extends JsonType<?, ?>>>()).left;
   }
 }

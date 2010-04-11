@@ -66,6 +66,35 @@ public final class TwoLattes {
     }
   };
 
+  static final JsonVisitor<Json.Array> ARRAYS_ONLY = new Illegal<Json.Array>() {
+    @Override
+    public Json.Array caseNull() {
+      return NULL;
+    }
+    @Override
+    public Json.Array caseArray(Json.Array array) {
+      return array;
+    }
+  };
+
+  static final JsonVisitor<Json.Object> OBJECTS_ONLY = new Illegal<Json.Object>() {
+    @Override
+    public Json.Object caseNull() {
+      return NULL;
+    }
+    @Override
+    public Json.Object caseObject(Json.Object object) {
+      return object;
+    }
+  };
+
+  static final JsonVisitor<Json.Null> NULLS_ONLY = new Illegal<Json.Null>() {
+    @Override
+    public Json.Null caseNull() {
+      return NULL;
+    }
+  };
+
   private static final Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> map = makeMap();
   private static Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> makeMap() {
     Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> map =
@@ -91,17 +120,8 @@ public final class TwoLattes {
    *   {@link Double}, {@link String}, or {@link Boolean} class, an {@link Enum}
    *   type, or a class annotated with {@link Entity @Entity}
    */
-  @SuppressWarnings("unchecked")
   public static <T> Marshaller<T> createMarshaller(Class<T> clazz) {
-    Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>> p = map.get(clazz);
-    if (p != null) {
-      return new DescriptorBackedMarshaller(p.left, p.right);
-    }
-    if (Enum.class.isAssignableFrom(clazz)) {
-      return new DescriptorBackedMarshaller(
-          new EnumNameDescriptor((Class<? extends Enum>) clazz), STRINGS_ONLY);
-    }
-    return createEntityMarshaller(clazz);
+    return new Builder().createMarshaller(clazz);
   }
 
   /**
@@ -110,7 +130,7 @@ public final class TwoLattes {
    * @param clazz A class annotated with {@link Entity @Entity}
    */
   public static <T> EntityMarshaller<T> createEntityMarshaller(Class<T> clazz) {
-    return new Builder().createMarshaller(clazz);
+    return new Builder().createEntityMarshaller(clazz);
   }
 
   public static Builder withType(Class<? extends JsonType<?, ?>> clazz) {
@@ -122,7 +142,8 @@ public final class TwoLattes {
    */
   public static class Builder {
 
-    private final Map<Type, Class<?>> types = new HashMap<Type, Class<?>>();
+    private final Map<Type, Class<? extends JsonType<?, ?>>> types =
+      new HashMap<Type, Class<? extends JsonType<?, ?>>>();
 
     public Builder withType(Class<? extends JsonType<?, ?>> clazz) {
       Class<?> rawType = extractRawType(
@@ -138,12 +159,55 @@ public final class TwoLattes {
       return this;
     }
 
-    public <T> EntityMarshaller<T> createMarshaller(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+    public <T> Marshaller<T> createMarshaller(Class<T> clazz) {
+      Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>> p = map.get(clazz);
+      if (p != null) {
+        return new DescriptorBackedMarshaller(p.left, p.right);
+      }
+      Class<? extends JsonType<?, ?>> type = types.get(clazz);
+      if (type != null) {
+        return new DescriptorBackedMarshaller(
+            new UserTypeDescriptor(Instantiator.newInstance(type)),
+            getJsonVisitor((Class<? extends Json.Value>)
+                getActualTypeArgument(type, JsonType.class, 1)));
+      }
+      if (Enum.class.isAssignableFrom(clazz)) {
+        return new DescriptorBackedMarshaller(
+            new EnumNameDescriptor((Class<? extends Enum>) clazz), STRINGS_ONLY);
+      }
+      return createEntityMarshaller(clazz);
+    }
+
+    public <T> EntityMarshaller<T> createEntityMarshaller(Class<T> clazz) {
       return new EntityMarshallerImpl<T>(clazz, types);
     }
 
     Class<?> get(Type type) {
       return types.get(type);
+    }
+
+    private static JsonVisitor<? extends Json.Value> getJsonVisitor(
+        Class<? extends Json.Value> type) {
+      if (Json.String.class.isAssignableFrom(type)) {
+        return STRINGS_ONLY;
+      }
+      if (Json.Number.class.isAssignableFrom(type)) {
+        return NUMBERS_ONLY;
+      }
+      if (Json.Boolean.class.isAssignableFrom(type)) {
+        return BOOLEANS_ONLY;
+      }
+      if (Json.Object.class.isAssignableFrom(type)) {
+        return OBJECTS_ONLY;
+      }
+      if (Json.Array.class.isAssignableFrom(type)) {
+        return ARRAYS_ONLY;
+      }
+      if (Json.Null.class.isAssignableFrom(type)) {
+        return NULLS_ONLY;
+      }
+      throw new AssertionError("unknown JSON value type: " + type.getName());
     }
 
   }

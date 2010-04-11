@@ -9,13 +9,16 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.twolattes.json.types.JsonType;
+
 public class EntityClassVisitorTest {
   private EntityClassVisitor visitor;
 
   @Before
   public void start() {
     visitor = new EntityClassVisitor(
-        EntityInterface.class, null, new HashMap<Type, Class<?>>());
+        EntityInterface.class, null,
+        new HashMap<Type, Class<? extends JsonType<?, ?>>>());
   }
 
   @Test

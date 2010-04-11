@@ -32,10 +32,10 @@ class EntityClassVisitor extends EmptyVisitor {
   private final Class<?> entityClass;
   private final EntityDescriptorStore store;
   private final Map<String, Method> methods;
-  private final Map<Type, Class<?>> types;
+  private final Map<Type, Class<? extends JsonType<?, ?>>> types;
 
   public EntityClassVisitor(Class<?> entityClass, EntityDescriptorStore store,
-      Map<Type, Class<?>> types) {
+      Map<Type, Class<? extends JsonType<?, ?>>> types) {
     this.fieldDescriptors = new HashMap<Json.String, FieldDescriptor>();
     this.entityClass = entityClass;
     this.store = store;

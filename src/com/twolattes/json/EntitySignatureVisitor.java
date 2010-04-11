@@ -42,9 +42,11 @@ class EntitySignatureVisitor implements SignatureVisitor {
     base, entity, collection, map, array;
   }
 
-  private static final Map<Character, Descriptor<?, ?>> baseTypes = new HashMap<Character, Descriptor<?, ?>>();
+  private static final Map<Character, Descriptor<?, ?>> baseTypes =
+    new HashMap<Character, Descriptor<?, ?>>();
 
-  private static final Map<String, Descriptor<?, ?>> baseObjectTypes = new HashMap<String, Descriptor<?, ?>>();
+  private static final Map<String, Descriptor<?, ?>> baseObjectTypes =
+    new HashMap<String, Descriptor<?, ?>>();
   static {
     baseTypes.put('I', INT_DESC);
     baseTypes.put('D', DOUBLE_LITERAL_DESC);
@@ -72,28 +74,21 @@ class EntitySignatureVisitor implements SignatureVisitor {
   }
 
   private Descriptor<?, ?> descriptor;
-
   private State state = State.base;
-
-  private List<EntitySignatureVisitor> next = new ArrayList<EntitySignatureVisitor>(
-      2);
-
+  private List<EntitySignatureVisitor> next = new ArrayList<EntitySignatureVisitor>(2);
   private Class<? extends Collection<?>> collectionType;
-
   private Class<? extends Map<?, ?>> mapClass;
-
   private final EntityDescriptorStore store;
-
   private final String signature;
-
   private final FieldDescriptor fieldDescriptor;
-
-  private final Map<Type, Class<?>> types;
-
+  private final Map<Type, Class<? extends JsonType<?, ?>>> types;
   private Entity entity;
 
-  EntitySignatureVisitor(String signature, EntityDescriptorStore store,
-      FieldDescriptor fieldDescriptor, Map<Type, Class<?>> types) {
+  EntitySignatureVisitor(
+      String signature,
+      EntityDescriptorStore store,
+      FieldDescriptor fieldDescriptor,
+      Map<Type, Class<? extends JsonType<?, ?>>> types) {
     this.signature = signature;
     this.store = store;
     this.fieldDescriptor = fieldDescriptor;
@@ -114,7 +109,7 @@ class EntitySignatureVisitor implements SignatureVisitor {
         Class<?> c = Class.forName(className.replace('/', '.'));
         if (types.containsKey(c)) {
           descriptor = new UserTypeDescriptor(
-              (JsonType) Instantiator.newInstance(types.get(c)));
+              Instantiator.newInstance(types.get(c)));
         } else if (c.isEnum()) {
           state = State.base;
           if (fieldDescriptor.useOrdinal()) {
