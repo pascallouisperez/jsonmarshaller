@@ -19,6 +19,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -150,8 +151,8 @@ public final class TwoLattes {
    */
   public static class Builder {
 
-    private final Map<Type, Class<? extends JsonType<?, ?>>> types =
-      new HashMap<Type, Class<? extends JsonType<?, ?>>>();
+    private Map<Type, Class<? extends JsonType<?, ?>>> types =
+      Collections.<Type, Class<? extends JsonType<?, ?>>>emptyMap();
 
     public Builder withType(Class<? extends JsonType<?, ?>> clazz) {
       Class<?> rawType = extractRawType(
@@ -162,7 +163,9 @@ public final class TwoLattes {
                 "%s overriding array's marshalling behavior cannot be registered",
                 JsonType.class.getSimpleName()));
       }
-
+      if (types.isEmpty()) {
+        types = new HashMap<Type, Class<? extends JsonType<?, ?>>>();
+      }
       types.put(rawType, clazz);
       return this;
     }
