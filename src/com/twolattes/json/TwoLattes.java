@@ -100,15 +100,23 @@ public final class TwoLattes {
     Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> map =
       new HashMap<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>>();
     map.put(Byte.class, Pair.of(BYTE_DESC, NUMBERS_ONLY));
+    map.put(Byte.TYPE, Pair.of(BYTE_DESC, NUMBERS_ONLY));
     map.put(Short.class, Pair.of(SHORT_DESC, NUMBERS_ONLY));
+    map.put(Short.TYPE, Pair.of(SHORT_DESC, NUMBERS_ONLY));
     map.put(Integer.class, Pair.of(INT_DESC, NUMBERS_ONLY));
+    map.put(Integer.TYPE, Pair.of(INT_DESC, NUMBERS_ONLY));
     map.put(Long.class, Pair.of(LONG_DESC, NUMBERS_ONLY));
+    map.put(Long.TYPE, Pair.of(LONG_DESC, NUMBERS_ONLY));
     map.put(BigDecimal.class, Pair.of(BIG_DECIMAL_DESC, NUMBERS_ONLY));
     map.put(Float.class, Pair.of(FLOAT_DESC, NUMBERS_ONLY));
+    map.put(Float.TYPE, Pair.of(FLOAT_DESC, NUMBERS_ONLY));
     map.put(Double.class, Pair.of(DOUBLE_DESC, NUMBERS_ONLY));
+    map.put(Double.TYPE, Pair.of(DOUBLE_DESC, NUMBERS_ONLY));
     map.put(String.class, Pair.of(STRING_DESC, STRINGS_ONLY));
     map.put(Character.class, Pair.of(CHARARACTER_DESC, STRINGS_ONLY));
+    map.put(Character.TYPE, Pair.of(CHARARACTER_DESC, STRINGS_ONLY));
     map.put(Boolean.class, Pair.of(BOOLEAN_DESC, BOOLEANS_ONLY));
+    map.put(Boolean.TYPE, Pair.of(BOOLEAN_DESC, BOOLEANS_ONLY));
     return map;
   }
 

@@ -36,6 +36,18 @@ public class JavaTypeUnmarshallingTest {
   Marshaller<Boolean> booleanMarshaller = createMarshaller(Boolean.class);
 
   @Test
+  public void literalTypes() {
+    assertEquals((byte) 3, createMarshaller(Byte.TYPE).unmarshall(number(3)));
+    assertEquals((short) 3, createMarshaller(Short.TYPE).unmarshall(number(3)));
+    assertEquals(3, createMarshaller(Integer.TYPE).unmarshall(number(3)));
+    assertEquals(3L, createMarshaller(Long.TYPE).unmarshall(number(3)));
+    assertEquals(3.1f, createMarshaller(Float.TYPE).unmarshall(number(3.1)));
+    assertEquals(3.1, createMarshaller(Double.TYPE).unmarshall(number(3.1)));
+    assertEquals('c', createMarshaller(Character.TYPE).unmarshall(string("c")));
+    assertEquals(false, createMarshaller(Boolean.TYPE).unmarshall(FALSE));
+  }
+
+  @Test
   public void bytes() {
     assertEquals(
         null,
