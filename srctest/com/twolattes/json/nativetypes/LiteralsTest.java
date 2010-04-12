@@ -3,11 +3,14 @@ package com.twolattes.json.nativetypes;
 import static com.twolattes.json.Json.FALSE;
 import static com.twolattes.json.Json.NULL;
 import static com.twolattes.json.Json.TRUE;
+import static com.twolattes.json.Json.array;
 import static com.twolattes.json.Json.number;
+import static com.twolattes.json.Json.object;
 import static com.twolattes.json.Json.string;
 import static com.twolattes.json.TwoLattes.createEntityMarshaller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -158,10 +161,10 @@ public class LiteralsTest {
 
   @Entity
   static class Float {
-    @Value float literal;
-    @Value java.lang.Float object;
-    @Value float[] nativeArray;
-    @Value java.lang.Float[] objectArray;
+    @Value(optional = true) float literal;
+    @Value(optional = true) java.lang.Float object;
+    @Value(optional = true) float[] nativeArray;
+    @Value(optional = true) java.lang.Float[] objectArray;
   }
 
   @Test
@@ -172,10 +175,11 @@ public class LiteralsTest {
       this.literal = 1f;
       this.object = 2f;
       this.nativeArray = new float[] { 3f, 4f };
-      this.objectArray = new java.lang.Float[] { 5f, 6f };
+      this.objectArray = new java.lang.Float[] { 5f, null };
     }});
 
-    assertJsonObjectWellFormed(object);
+    assertJsonObjectWellFormed(object, number(1), number(2), number(3),
+        number(4), number(5), NULL);
 
     Float instance = marshaller.unmarshall(object);
 
@@ -186,7 +190,15 @@ public class LiteralsTest {
     assertEquals(4f, instance.nativeArray[1]);
     assertEquals(2, instance.objectArray.length);
     assertEquals(5f, instance.objectArray[0]);
-    assertEquals(6f, instance.objectArray[1]);
+    assertNull(instance.objectArray[1]);
+
+    assertEquals(0f, marshaller.unmarshall(object()).literal);
+
+    try {
+      marshaller.unmarshall(object(string("nativeArray"), array(NULL)));
+      fail("expected NPE");
+    } catch (NullPointerException e) {
+    }
   }
 
   @Entity
