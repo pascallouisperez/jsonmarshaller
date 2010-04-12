@@ -178,7 +178,7 @@ class EntitySignatureVisitor implements SignatureVisitor {
           return Pair.<Descriptor, Entity> of(
               new CollectionDescriptor(collectionType,
                   inlineEntityIfNecessary(next.get(0).getDescriptor())),
-                  null);
+              null);
         }
 
       case array:

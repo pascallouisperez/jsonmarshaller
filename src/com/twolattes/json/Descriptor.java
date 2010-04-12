@@ -5,7 +5,7 @@ package com.twolattes.json;
  * a collection, a map, an array or a user defined type.
  *
  * @param <E> the type of the entity being described
- * @param <J> the type of the marsahlled entity
+ * @param <J> the type of the marshalled entity
  */
 interface Descriptor<E, J extends Json.Value> {
   /**

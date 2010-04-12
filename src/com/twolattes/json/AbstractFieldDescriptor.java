@@ -13,18 +13,17 @@ import com.twolattes.json.types.JsonType;
 
 /**
  * An entity's field descriptor.
- *
  */
 abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
   private final Json.String fieldName;
 
   // fields with a default value
-  private Set<String> views = null;
+  private Set<String> views;
 
-  private Json.String jsonName = null;
+  private Json.String jsonName;
 
-  private boolean ordinal = false;
+  private boolean ordinal;
 
   // fields that MUST be defined before the FieldDescriptor can (un)marshall
   private Descriptor<?, ?> descriptor;
@@ -35,7 +34,6 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
     this.fieldName = string(fieldName);
   }
 
-  @SuppressWarnings("unchecked")
   public void marshall(Object entity, String view, Json.Object jsonObject) {
     if (isInView(view)) {
       jsonObject.put(
@@ -43,7 +41,6 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void unmarshall(Object entity, String view, Json.Object jsonObject) {
     Json.String name = getJsonName();
     if (jsonObject.containsKey(name)) {

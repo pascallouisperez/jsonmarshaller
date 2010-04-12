@@ -8,8 +8,6 @@ import java.util.Set;
 
 /**
  * Descriptor for {@link Set}s or {@link List}s.
- *
- * @author pascallouis
  */
 @SuppressWarnings("unchecked")
 class CollectionDescriptor extends AbstractDescriptor<Collection, Json.Array> {

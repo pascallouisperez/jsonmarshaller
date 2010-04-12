@@ -204,7 +204,7 @@ public final class TwoLattes {
             getJsonVisitor((Class<? extends Json.Value>)
                 getActualTypeArgument(type, JsonType.class, 1)));
       }
-      if (Enum.class.isAssignableFrom(clazz)) {
+      if (clazz.isEnum()) {
         return new DescriptorBackedMarshaller(
             new EnumNameDescriptor((Class<? extends Enum>) clazz), STRING_OR_NULL);
       }

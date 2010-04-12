@@ -5,21 +5,18 @@ import com.twolattes.json.Json;
 /**
  * JSON type to extend basic marshalling.
  */
-public interface JsonType<E, J extends Json.Value> {
+public interface JsonType<T, J extends Json.Value> {
 
   /**
-   * Handles the marshalling on an instance of an entity.
-   * @param entity the entity to marshall, it can never be <tt>null</tt>
-   * @return a {@link Json.Value}
+   * Handles the marshalling of an object.
+   * @param object the object to marshall (never <tt>null</tt>)
    */
-  public J marshall(E entity);
+  public J marshall(T object);
 
   /**
    * Handles the unmarshalling of an object.
-   * @param object an object of the same type of the return type of
-   * {@link #marshall(Object)}, it can never be <tt>null</tt>
-   * @return the instance of <tt>T</tt>
+   * @param object the object to unmarshall (never <tt>null</tt>)
    */
-  public E unmarshall(J object);
+  public T unmarshall(J object);
 
 }

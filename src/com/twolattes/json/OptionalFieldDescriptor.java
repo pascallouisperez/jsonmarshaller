@@ -11,8 +11,7 @@ class OptionalFieldDescriptor extends DefaultBoxingFieldDescriptor {
   }
 
   @SuppressWarnings("unchecked")
-  public void marshall(Object entity, String view,
-      com.twolattes.json.Json.Object jsonObject) {
+  public void marshall(Object entity, String view, Json.Object jsonObject) {
     if (isInView(view)) {
       Object fieldValue = getFieldValue(entity);
       if (fieldValue != null) {
@@ -22,8 +21,7 @@ class OptionalFieldDescriptor extends DefaultBoxingFieldDescriptor {
     }
   }
 
-  public void unmarshall(Object entity, String view,
-      com.twolattes.json.Json.Object jsonObject) {
+  public void unmarshall(Object entity, String view, Json.Object jsonObject) {
     if (jsonObject.containsKey(getJsonName())) {
       delegate.unmarshall(entity, view, jsonObject);
     }
