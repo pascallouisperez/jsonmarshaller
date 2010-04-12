@@ -13,6 +13,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -25,27 +26,23 @@ import com.twolattes.json.Marshaller;
 public class JavaTypeUnmarshallingTest {
 
   Marshaller<Byte> byteMarshaller = createMarshaller(Byte.class);
+  Marshaller<Byte> byteLitMarshaller = createMarshaller(Byte.TYPE);
   Marshaller<Short> shortMarshaller = createMarshaller(Short.class);
+  Marshaller<Short> shortLitMarshaller = createMarshaller(Short.TYPE);
   Marshaller<Integer> integerMarshaller = createMarshaller(Integer.class);
+  Marshaller<Integer> intLitMarshaller = createMarshaller(Integer.TYPE);
   Marshaller<Long> longMarshaller = createMarshaller(Long.class);
+  Marshaller<Long> longLitMarshaller = createMarshaller(Long.TYPE);
   Marshaller<BigDecimal> bdMarshaller = createMarshaller(BigDecimal.class);
   Marshaller<Float> floatMarshaller = createMarshaller(Float.class);
+  Marshaller<Float> floatLitMarshaller = createMarshaller(Float.TYPE);
   Marshaller<Double> doubleMarshaller = createMarshaller(Double.class);
+  Marshaller<Double> doubleLitMarshaller = createMarshaller(Double.TYPE);
   Marshaller<String> stringMarshaller = createMarshaller(String.class);
   Marshaller<Character> characterMarshaller = createMarshaller(Character.class);
+  Marshaller<Character> charLitMarshaller = createMarshaller(Character.TYPE);
   Marshaller<Boolean> booleanMarshaller = createMarshaller(Boolean.class);
-
-  @Test
-  public void literalTypes() {
-    assertEquals((byte) 3, createMarshaller(Byte.TYPE).unmarshall(number(3)));
-    assertEquals((short) 3, createMarshaller(Short.TYPE).unmarshall(number(3)));
-    assertEquals(3, createMarshaller(Integer.TYPE).unmarshall(number(3)));
-    assertEquals(3L, createMarshaller(Long.TYPE).unmarshall(number(3)));
-    assertEquals(3.1f, createMarshaller(Float.TYPE).unmarshall(number(3.1)));
-    assertEquals(3.1, createMarshaller(Double.TYPE).unmarshall(number(3.1)));
-    assertEquals('c', createMarshaller(Character.TYPE).unmarshall(string("c")));
-    assertEquals(false, createMarshaller(Boolean.TYPE).unmarshall(FALSE));
-  }
+  Marshaller<Boolean> booleanLitMarshaller = createMarshaller(Boolean.TYPE);
 
   @Test
   public void bytes() {
@@ -56,9 +53,9 @@ public class JavaTypeUnmarshallingTest {
         23,
         byteMarshaller.unmarshall(number(23)));
     assertEquals(
-        asList(Byte.MIN_VALUE, (byte) 0, Byte.MAX_VALUE),
+        asList(Byte.MIN_VALUE, null, Byte.MAX_VALUE),
         byteMarshaller.unmarshallList(
-            array(number(Byte.MIN_VALUE), number(0), number(Byte.MAX_VALUE))));
+            array(number(Byte.MIN_VALUE), NULL, number(Byte.MAX_VALUE))));
     assertEquals(
         map("a", (byte) 2, "-a", (byte) -2),
         byteMarshaller.unmarshallMap(
@@ -77,6 +74,38 @@ public class JavaTypeUnmarshallingTest {
   }
 
   @Test
+  public void byteLiterals() {
+    assertEquals((byte) 23, byteLitMarshaller.unmarshall(number(23)));
+    assertEquals(
+        asList(Byte.MIN_VALUE, (byte) 0, Byte.MAX_VALUE),
+        byteLitMarshaller.unmarshallList(
+            array(number(Byte.MIN_VALUE), number(0), number(Byte.MAX_VALUE))));
+    assertEquals(
+        map("a", (byte) 2, "-a", (byte) -2),
+        byteLitMarshaller.unmarshallMap(
+            object(string("a"), number(2), string("-a"), number(-2))));
+  }
+
+  @Test
+  public void nullAsByteLiteral() {
+    try {
+      byteLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      byteLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      byteLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+  }
+
+  @Test
   public void shorts() {
     assertEquals(
         Short.MIN_VALUE,
@@ -87,6 +116,38 @@ public class JavaTypeUnmarshallingTest {
     assertEquals(
         singletonMap(";", null),
         shortMarshaller.unmarshallMap(object(string(";"), NULL)));
+  }
+
+  @Test
+  public void shortLiterals() {
+    assertEquals((short) 23, shortLitMarshaller.unmarshall(number(23)));
+    assertEquals(
+        asList(Short.MIN_VALUE, (short) 0, Short.MAX_VALUE),
+        shortLitMarshaller.unmarshallList(
+            array(number(Short.MIN_VALUE), number(0), number(Short.MAX_VALUE))));
+    assertEquals(
+        map("a", (short) 2, "-a", (short) -2),
+        shortLitMarshaller.unmarshallMap(
+            object(string("a"), number(2), string("-a"), number(-2))));
+  }
+
+  @Test
+  public void nullAsShortLiteral() {
+    try {
+      shortLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      shortLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      shortLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   @Test
@@ -104,6 +165,39 @@ public class JavaTypeUnmarshallingTest {
             object(string("ii"), number(Integer.MAX_VALUE))));
   }
 
+
+  @Test
+  public void intLiterals() {
+    assertEquals(23, intLitMarshaller.unmarshall(number(23)));
+    assertEquals(
+        asList(Integer.MIN_VALUE, 0, Integer.MAX_VALUE),
+        intLitMarshaller.unmarshallList(
+            array(number(Integer.MIN_VALUE), number(0), number(Integer.MAX_VALUE))));
+    assertEquals(
+        map("a", 2, "-a", -2),
+        intLitMarshaller.unmarshallMap(
+            object(string("a"), number(2), string("-a"), number(-2))));
+  }
+
+  @Test
+  public void nullAsIntLiteral() {
+    try {
+      intLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      intLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      intLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+  }
+
   @Test
   public void longs() {
     assertEquals(
@@ -116,6 +210,38 @@ public class JavaTypeUnmarshallingTest {
     assertEquals(
         singletonMap("1", 2L),
         longMarshaller.unmarshallMap(object(string("1"), number(2))));
+  }
+
+  @Test
+  public void longLiterals() {
+    assertEquals(23, longLitMarshaller.unmarshall(number(23)));
+    assertEquals(
+        asList(Long.MIN_VALUE, 0L, Long.MAX_VALUE),
+        longLitMarshaller.unmarshallList(
+            array(number(Long.MIN_VALUE), number(0), number(Long.MAX_VALUE))));
+    assertEquals(
+        map("a", 2L, "-a", -2L),
+        longLitMarshaller.unmarshallMap(
+            object(string("a"), number(2), string("-a"), number(-2))));
+  }
+
+  @Test
+  public void nullAsLongLiteral() {
+    try {
+      longLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      longLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      longLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   @Test
@@ -165,6 +291,38 @@ public class JavaTypeUnmarshallingTest {
   }
 
   @Test
+  public void floatLiterals() {
+    assertEquals(23.1, floatLitMarshaller.unmarshall(number(23.1)));
+    assertEquals(
+        asList(Float.MIN_VALUE, 0f, Float.MAX_VALUE),
+        floatLitMarshaller.unmarshallList(
+            array(number(Float.MIN_VALUE), number(0), number(Float.MAX_VALUE))));
+    assertEquals(
+        map("a", 2f, "-a", -2f),
+        floatLitMarshaller.unmarshallMap(
+            object(string("a"), number(2), string("-a"), number(-2))));
+  }
+
+  @Test
+  public void nullAsFloatLiteral() {
+    try {
+      floatLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      floatLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      floatLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+  }
+
+  @Test
   public void doubles() {
     assertEquals(
         Math.PI,
@@ -175,6 +333,38 @@ public class JavaTypeUnmarshallingTest {
     assertEquals(
         singletonMap("b", 1.0 / 3.0),
         doubleMarshaller.unmarshallMap(object(string("b"), number(1.0 / 3.0))));
+  }
+
+  @Test
+  public void doubleLiterals() {
+    assertEquals(23.1, doubleLitMarshaller.unmarshall(number(23.1)));
+    assertEquals(
+        asList(Double.MIN_VALUE, 0d, Double.MAX_VALUE),
+        doubleLitMarshaller.unmarshallList(
+            array(number(Double.MIN_VALUE), number(0), number(Double.MAX_VALUE))));
+    assertEquals(
+        map("a", 2d, "-a", -2d),
+        doubleLitMarshaller.unmarshallMap(
+            object(string("a"), number(2), string("-a"), number(-2))));
+  }
+
+  @Test
+  public void nullAsDoubleLiteral() {
+    try {
+      doubleLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      doubleLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      doubleLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   @Test
@@ -204,9 +394,49 @@ public class JavaTypeUnmarshallingTest {
         characterMarshaller.unmarshallMap(object(string("b"), string("c"))));
   }
 
+  @Test(expected = RuntimeException.class)
+  public void emptyStringAsCharacter() {
+    characterMarshaller.unmarshall(string(""));
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void longStringAsCharacter() {
+    characterMarshaller.unmarshall(string("ab"));
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void numberAsCharacter() {
     characterMarshaller.unmarshall(number(32));
+  }
+
+  @Test
+  public void charLiterals() {
+    assertEquals('c', charLitMarshaller.unmarshall(string("c")));
+    assertEquals(
+        asList('\u0000'),
+        charLitMarshaller.unmarshallList(array(string("\u0000"))));
+    assertEquals(
+        singletonMap("", 'c'),
+        charLitMarshaller.unmarshallMap(object(string(""), string("c"))));
+  }
+
+  @Test
+  public void nullAsCharLiteral() {
+    try {
+      charLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      charLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      charLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   @Test
@@ -221,6 +451,35 @@ public class JavaTypeUnmarshallingTest {
         map("", false, " ", true),
         booleanMarshaller.unmarshallMap(
             object(string(""), FALSE, string(" "), TRUE)));
+  }
+
+  @Test
+  public void booleanLiterals() {
+    assertEquals(true, booleanLitMarshaller.unmarshall(TRUE));
+    assertEquals(asList(true), booleanLitMarshaller.unmarshallList(array(TRUE)));
+    assertEquals(
+        map("a", true, "-a", false),
+        booleanLitMarshaller.unmarshallMap(
+            object(string("a"), TRUE, string("-a"), FALSE)));
+  }
+
+  @Test
+  public void nullAsBooleanLiteral() {
+    try {
+      booleanLitMarshaller.unmarshall(NULL);
+      fail("IllegalArgument expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      booleanLitMarshaller.unmarshallList(array(NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
+    try {
+      booleanLitMarshaller.unmarshallMap(object(string("a"), NULL));
+      fail("IllegalArgumentException expected");
+    } catch (IllegalArgumentException e) {
+    }
   }
 
   private static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2) {

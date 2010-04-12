@@ -34,7 +34,14 @@ public final class TwoLattes {
 
   /* don't instantiate */ private TwoLattes() {}
 
-  static final JsonVisitor<Json.String> STRINGS_ONLY = new Illegal<Json.String>() {
+  static final JsonVisitor<Json.String> STRING_NOT_NULL = new Illegal<Json.String>() {
+    @Override
+    public Json.String caseString(Json.String string) {
+      return string;
+    }
+  };
+
+  static final JsonVisitor<Json.String> STRING_OR_NULL = new Illegal<Json.String>() {
     @Override
     public Json.String caseNull() {
       return NULL;
@@ -45,7 +52,14 @@ public final class TwoLattes {
     }
   };
 
-  static final JsonVisitor<Json.Number> NUMBERS_ONLY = new Illegal<Json.Number>() {
+  static final JsonVisitor<Json.Number> NUMBER_NOT_NULL = new Illegal<Json.Number>() {
+    @Override
+    public Json.Number caseNumber(Json.Number number) {
+      return number;
+    }
+  };
+
+  static final JsonVisitor<Json.Number> NUMBER_OR_NULL = new Illegal<Json.Number>() {
     @Override
     public Json.Number caseNull() {
       return NULL;
@@ -56,7 +70,14 @@ public final class TwoLattes {
     }
   };
 
-  static final JsonVisitor<Json.Boolean> BOOLEANS_ONLY = new Illegal<Json.Boolean>() {
+  static final JsonVisitor<Json.Boolean> BOOLEAN_NOT_NULL = new Illegal<Json.Boolean>() {
+    @Override
+    public Json.Boolean caseBoolean(Json.Boolean bool) {
+      return bool;
+    }
+  };
+
+  static final JsonVisitor<Json.Boolean> BOOLEAN_OR_NULL = new Illegal<Json.Boolean>() {
     @Override
     public Json.Boolean caseNull() {
       return NULL;
@@ -67,7 +88,7 @@ public final class TwoLattes {
     }
   };
 
-  static final JsonVisitor<Json.Array> ARRAYS_ONLY = new Illegal<Json.Array>() {
+  static final JsonVisitor<Json.Array> ARRAY_OR_NULL = new Illegal<Json.Array>() {
     @Override
     public Json.Array caseNull() {
       return NULL;
@@ -78,7 +99,7 @@ public final class TwoLattes {
     }
   };
 
-  static final JsonVisitor<Json.Object> OBJECTS_ONLY = new Illegal<Json.Object>() {
+  static final JsonVisitor<Json.Object> OBJECT_OR_NULL = new Illegal<Json.Object>() {
     @Override
     public Json.Object caseNull() {
       return NULL;
@@ -89,7 +110,7 @@ public final class TwoLattes {
     }
   };
 
-  static final JsonVisitor<Json.Null> NULLS_ONLY = new Illegal<Json.Null>() {
+  static final JsonVisitor<Json.Null> NULL_ONLY = new Illegal<Json.Null>() {
     @Override
     public Json.Null caseNull() {
       return NULL;
@@ -100,24 +121,24 @@ public final class TwoLattes {
   private static Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> makeMap() {
     Map<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>> map =
       new HashMap<Class<?>, Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>>>();
-    map.put(Byte.class, Pair.of(BYTE_DESC, NUMBERS_ONLY));
-    map.put(Byte.TYPE, Pair.of(BYTE_DESC, NUMBERS_ONLY));
-    map.put(Short.class, Pair.of(SHORT_DESC, NUMBERS_ONLY));
-    map.put(Short.TYPE, Pair.of(SHORT_DESC, NUMBERS_ONLY));
-    map.put(Integer.class, Pair.of(INT_DESC, NUMBERS_ONLY));
-    map.put(Integer.TYPE, Pair.of(INT_DESC, NUMBERS_ONLY));
-    map.put(Long.class, Pair.of(LONG_DESC, NUMBERS_ONLY));
-    map.put(Long.TYPE, Pair.of(LONG_DESC, NUMBERS_ONLY));
-    map.put(BigDecimal.class, Pair.of(BIG_DECIMAL_DESC, NUMBERS_ONLY));
-    map.put(Float.class, Pair.of(FLOAT_DESC, NUMBERS_ONLY));
-    map.put(Float.TYPE, Pair.of(FLOAT_DESC, NUMBERS_ONLY));
-    map.put(Double.class, Pair.of(DOUBLE_DESC, NUMBERS_ONLY));
-    map.put(Double.TYPE, Pair.of(DOUBLE_DESC, NUMBERS_ONLY));
-    map.put(String.class, Pair.of(STRING_DESC, STRINGS_ONLY));
-    map.put(Character.class, Pair.of(CHARARACTER_DESC, STRINGS_ONLY));
-    map.put(Character.TYPE, Pair.of(CHARARACTER_DESC, STRINGS_ONLY));
-    map.put(Boolean.class, Pair.of(BOOLEAN_DESC, BOOLEANS_ONLY));
-    map.put(Boolean.TYPE, Pair.of(BOOLEAN_DESC, BOOLEANS_ONLY));
+    map.put(Byte.class, Pair.of(BYTE_DESC, NUMBER_OR_NULL));
+    map.put(Byte.TYPE, Pair.of(BYTE_DESC, NUMBER_NOT_NULL));
+    map.put(Short.class, Pair.of(SHORT_DESC, NUMBER_OR_NULL));
+    map.put(Short.TYPE, Pair.of(SHORT_DESC, NUMBER_NOT_NULL));
+    map.put(Integer.class, Pair.of(INT_DESC, NUMBER_OR_NULL));
+    map.put(Integer.TYPE, Pair.of(INT_DESC, NUMBER_NOT_NULL));
+    map.put(Long.class, Pair.of(LONG_DESC, NUMBER_OR_NULL));
+    map.put(Long.TYPE, Pair.of(LONG_DESC, NUMBER_NOT_NULL));
+    map.put(BigDecimal.class, Pair.of(BIG_DECIMAL_DESC, NUMBER_OR_NULL));
+    map.put(Float.class, Pair.of(FLOAT_DESC, NUMBER_OR_NULL));
+    map.put(Float.TYPE, Pair.of(FLOAT_DESC, NUMBER_NOT_NULL));
+    map.put(Double.class, Pair.of(DOUBLE_DESC, NUMBER_OR_NULL));
+    map.put(Double.TYPE, Pair.of(DOUBLE_DESC, NUMBER_NOT_NULL));
+    map.put(String.class, Pair.of(STRING_DESC, STRING_OR_NULL));
+    map.put(Character.class, Pair.of(CHARARACTER_DESC, STRING_OR_NULL));
+    map.put(Character.TYPE, Pair.of(CHARARACTER_DESC, STRING_NOT_NULL));
+    map.put(Boolean.class, Pair.of(BOOLEAN_DESC, BOOLEAN_OR_NULL));
+    map.put(Boolean.TYPE, Pair.of(BOOLEAN_DESC, BOOLEAN_NOT_NULL));
     return map;
   }
 
@@ -185,7 +206,7 @@ public final class TwoLattes {
       }
       if (Enum.class.isAssignableFrom(clazz)) {
         return new DescriptorBackedMarshaller(
-            new EnumNameDescriptor((Class<? extends Enum>) clazz), STRINGS_ONLY);
+            new EnumNameDescriptor((Class<? extends Enum>) clazz), STRING_OR_NULL);
       }
       return createEntityMarshaller(clazz);
     }
@@ -201,22 +222,22 @@ public final class TwoLattes {
     private static JsonVisitor<? extends Json.Value> getJsonVisitor(
         Class<? extends Json.Value> type) {
       if (Json.String.class.isAssignableFrom(type)) {
-        return STRINGS_ONLY;
+        return STRING_OR_NULL;
       }
       if (Json.Number.class.isAssignableFrom(type)) {
-        return NUMBERS_ONLY;
+        return NUMBER_NOT_NULL;
       }
       if (Json.Boolean.class.isAssignableFrom(type)) {
-        return BOOLEANS_ONLY;
+        return BOOLEAN_OR_NULL;
       }
       if (Json.Object.class.isAssignableFrom(type)) {
-        return OBJECTS_ONLY;
+        return OBJECT_OR_NULL;
       }
       if (Json.Array.class.isAssignableFrom(type)) {
-        return ARRAYS_ONLY;
+        return ARRAY_OR_NULL;
       }
       if (Json.Null.class.isAssignableFrom(type)) {
-        return NULLS_ONLY;
+        return NULL_ONLY;
       }
       throw new AssertionError("unknown JSON value type: " + type.getName());
     }
