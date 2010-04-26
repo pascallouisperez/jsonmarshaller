@@ -20,8 +20,10 @@ import static junit.framework.Assert.assertFalse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -317,6 +319,192 @@ public class JsonTest {
     assertEquals(
         array(number(89), number(8.7), number(42)),
         fromString("[89,8.7,4.2e1]"));
+  }
+
+  @Test
+  public void generateArray1() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(0, values.size());
+  }
+
+  @Test
+  public void generateArray2() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[true]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(1, values.size());
+    assertEquals(TRUE, values.get(0));
+  }
+
+  @Test
+  public void generateArray3() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[  true , null \t]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(2, values.size());
+    assertEquals(TRUE, values.get(0));
+    assertEquals(NULL, values.get(1));
+  }
+
+  @Test
+  public void generateArray4a() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[  true , null \t,\"\" ]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(3, values.size());
+    assertEquals(TRUE, values.get(0));
+    assertEquals(NULL, values.get(1));
+    assertEquals(string(""), values.get(2));
+  }
+
+  @Test
+  public void generateArray4b() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[true,null,\"\"]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(3, values.size());
+    assertEquals(TRUE, values.get(0));
+    assertEquals(NULL, values.get(1));
+    assertEquals(string(""), values.get(2));
+  }
+
+  @Test
+  public void generateArray4c() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[true, null,\"\"]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(3, values.size());
+    assertEquals(TRUE, values.get(0));
+    assertEquals(NULL, values.get(1));
+    assertEquals(string(""), values.get(2));
+  }
+
+  @Test
+  public void generateArray5a() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[[false],true]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(2, values.size());
+    assertEquals(array(FALSE), values.get(0));
+    assertEquals(TRUE, values.get(1));
+  }
+
+  @Test
+  public void generateArray5b() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[false,[true]]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(2, values.size());
+    assertEquals(FALSE, values.get(0));
+    assertEquals(array(TRUE), values.get(1));
+  }
+
+  @Test
+  public void generateArray5c() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[[false],[true]]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(2, values.size());
+    assertEquals(array(FALSE), values.get(0));
+    assertEquals(array(TRUE), values.get(1));
+  }
+
+  @Test
+  public void generateArray5d() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[[false]]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(1, values.size());
+    assertEquals(array(FALSE), values.get(0));
+  }
+
+  @Test
+  public void generateArray5e() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[[false, true]]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(1, values.size());
+    assertEquals(array(FALSE, TRUE), values.get(0));
+  }
+
+  @Test
+  public void generateArray6() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[[[[false]]]]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(1, values.size());
+    assertEquals(array(array(array(FALSE))), values.get(0));
+  }
+
+  @Test
+  public void generateArray7() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[[[[false]]],null,[false]]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(3, values.size());
+    assertEquals(array(array(array(FALSE))), values.get(0));
+    assertEquals(NULL, values.get(1));
+    assertEquals(array(FALSE), values.get(2));
+  }
+
+  @Test
+  public void generateArray8() throws Exception {
+    final List<Json.Value> values = newArrayList();
+    Json.generate(new StringReader("[89,8.7,4.2e1]"), new Json.Generator() {
+      public void yield(Json.Value value) {
+        values.add(value);
+      }
+    });
+    assertEquals(3, values.size());
+    assertEquals(number(89), values.get(0));
+    assertEquals(number(8.7), values.get(1));
+    assertEquals(number(42), values.get(2));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void generateNonArray() throws Exception {
+    Json.generate(new StringReader("{}"), null);
   }
 
   @Test

@@ -647,11 +647,44 @@ public final class Json {
     return read(stream, skip(stream));
   }
 
+  /**
+   * Read a JSON array from a reader and call {@code Generator#yield(Json.Value)}
+   * after parsing each element.
+   */
+  public static void generate(Reader reader, Generator generator) throws IOException {
+    CharStream stream = new CharStream(reader);
+    generate(stream, skip(stream), generator);
+  }
+
   private static int skip(CharStream reader) throws IOException {
     int c;
     while (Character.isWhitespace(c = reader.read())) {
     }
     return c;
+  }
+
+  private static void generate(CharStream reader, int c, Generator generator) throws IOException {
+    switch (c) {
+      // array
+      case '[':
+        // Unrolling to avoid state, note that the first time around we must not
+        // skip when reading the value added to the array.
+        c = skip(reader);
+        if (c == ']') {
+          return;
+        }
+        generator.yield(read(reader, c));
+        c = skip(reader);
+        do {
+          if (c == ']') {
+            return;
+          }
+          generator.yield(read(reader, skip(reader)));
+        } while ((c = skip(reader)) == ',' || c == ']');
+        throw new IllegalArgumentException("non terminated array literal");
+      default:
+        throw new IllegalArgumentException("array expected");
+    }
   }
 
   private static Json.Value read(CharStream reader, int c) throws IOException {
@@ -1009,6 +1042,12 @@ public final class Json {
   /** See {@link #NULL}. */
   static Json.Null nullValue() {
     return new Json.NullImpl();
+  }
+
+  public static interface Generator {
+
+    void yield(Json.Value value);
+
   }
 
 }
