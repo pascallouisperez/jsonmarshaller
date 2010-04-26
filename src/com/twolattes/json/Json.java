@@ -1044,8 +1044,14 @@ public final class Json {
     return new Json.NullImpl();
   }
 
+  /**
+   * Function invoked inside loops to yield {@code Json.Value}s to the caller.
+   */
   public static interface Generator {
 
+    /**
+     * Yield a {@code Json.Value}.
+     */
     void yield(Json.Value value);
 
   }
