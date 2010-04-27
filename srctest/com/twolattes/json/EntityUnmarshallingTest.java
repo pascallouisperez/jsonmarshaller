@@ -1,5 +1,6 @@
 package com.twolattes.json;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.twolattes.json.Json.object;
 import static com.twolattes.json.Json.string;
 import static org.junit.Assert.assertEquals;
@@ -7,6 +8,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
@@ -152,6 +155,22 @@ public class EntityUnmarshallingTest {
   public void testCollectionOfEntities() throws Exception {
     List<User> users = unmarshallList(User.class,
         "[{\"email\": \"jack@bauer.net\"}, {\"email\": \"foo@bar.com\"}]");
+
+    assertEquals(2, users.size());
+    assertEquals("jack@bauer.net", users.get(0).email.email);
+    assertEquals("foo@bar.com", users.get(1).email.email);
+  }
+
+  @Test
+  public void testStreamOfEntities() throws Exception {
+    final List<User> users = newArrayList();
+    streamingUnmarshallList(User.class,
+        "[{\"email\": \"jack@bauer.net\"}, {\"email\": \"foo@bar.com\"}]",
+        new Marshaller.Generator<User>() {
+          public void yield(User entity) {
+            users.add(entity);
+          }
+        });
 
     assertEquals(2, users.size());
     assertEquals("jack@bauer.net", users.get(0).email.email);
@@ -379,6 +398,16 @@ public class EntityUnmarshallingTest {
   public static <T> List<T> unmarshallList(Class<T> clazz, String json) {
     Marshaller<T> marshaller = TwoLattes.createMarshaller(clazz);
     return marshaller.unmarshallList((Json.Array) Json.fromString(json));
+  }
+
+  public static <T> void streamingUnmarshallList(
+      Class<T> clazz, String json, Marshaller.Generator<? super T> generator) {
+    Marshaller<T> marshaller = TwoLattes.createMarshaller(clazz);
+    try {
+      marshaller.unmarshallStream(new StringReader(json), generator);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

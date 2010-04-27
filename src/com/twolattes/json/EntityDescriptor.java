@@ -16,7 +16,7 @@ interface EntityDescriptor<T> extends Descriptor<T, Json.Value> {
   Set<FieldDescriptor> getAllFieldDescriptors();
 
   /**
-   * Gets this entitie's discriminator. This is an optional operation which
+   * Gets this entity's discriminator. This is an optional operation which
    * should be defined for entities mentioned in a
    * {@link Entity#subclasses()} list.
    */

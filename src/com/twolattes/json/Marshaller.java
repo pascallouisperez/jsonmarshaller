@@ -1,5 +1,7 @@
 package com.twolattes.json;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -106,5 +108,24 @@ public interface Marshaller<T> {
    * @return the unmarshalled map
    */
   Map<String, T> unmarshallMap(Json.Object object, String view);
+
+  /**
+   * Unmarshalls a JSON array representation of a list of {@code T}s and calls
+   * {@code Generator#yield(T)} after parsing each element.
+   */
+  void unmarshallStream(Reader reader, Generator<? super T> generator)
+      throws IOException;
+
+  /**
+   * Function invoked inside loops to yield {@code T}s to the caller.
+   */
+  public static interface Generator<T> {
+
+    /**
+     * Yield a {@code T}.
+     */
+    void yield(T entity);
+
+  }
 
 }

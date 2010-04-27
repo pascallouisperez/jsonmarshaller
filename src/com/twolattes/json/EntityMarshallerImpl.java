@@ -1,6 +1,7 @@
 package com.twolattes.json;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,6 +107,15 @@ class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
           clazz.cast(collectionDescriptor.unmarshall(object.get(key), view)));
     }
     return map;
+  }
+
+  public void unmarshallStream(Reader reader,
+      final Marshaller.Generator<? super T> generator) throws IOException {
+    Json.generate(reader, new Json.Generator() {
+      public void yield(Json.Value value) {
+        generator.yield(unmarshall(value));
+      }
+    });
   }
 
 }

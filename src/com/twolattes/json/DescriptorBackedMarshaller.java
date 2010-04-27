@@ -6,6 +6,8 @@ import static com.twolattes.json.Json.string;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,6 +100,15 @@ class DescriptorBackedMarshaller<T, J extends Json.Value> implements Marshaller<
       map.put(key.getString(), unmarshall(object.get(key), view));
     }
     return map;
+  }
+
+  public void unmarshallStream(Reader reader,
+      final Marshaller.Generator<? super T> generator) throws IOException {
+    Json.generate(reader, new Json.Generator() {
+      public void yield(Json.Value value) {
+        generator.yield(unmarshall(value));
+      }
+    });
   }
 
 }
