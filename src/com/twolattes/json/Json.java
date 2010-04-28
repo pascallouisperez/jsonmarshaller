@@ -30,6 +30,12 @@ public final class Json {
 
     <T> T visit(JsonVisitor<T> visitor);
 
+    /**
+     * Returns a JSON representation of this value.
+     * @return a JSON representation of this value
+     */
+    java.lang.String toString();
+
   }
 
   /**
