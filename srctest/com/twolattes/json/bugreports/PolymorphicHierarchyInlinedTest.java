@@ -2,7 +2,6 @@ package com.twolattes.json.bugreports;
 
 import static com.twolattes.json.TwoLattes.createEntityMarshaller;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.twolattes.json.Entity;
@@ -11,7 +10,6 @@ import com.twolattes.json.Value;
 public class PolymorphicHierarchyInlinedTest {
 
   @Test(expected = IllegalArgumentException.class)
-  @Ignore
   public void marshallTopLevel() {
     createEntityMarshaller(TopLevel.class).marshall(new TopLevel() {{
       this.person = new Employee();
@@ -34,6 +32,5 @@ public class PolymorphicHierarchyInlinedTest {
   @Entity(discriminator = "manager")
   static class Manager extends Person {
   }
-
 
 }

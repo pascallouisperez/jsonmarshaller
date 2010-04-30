@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 class PolymorphicEntityDescriptor<E> implements EntityDescriptor<E> {
+
   /**
    * Subclasses' descriptors used if the described entity is a polymorphic
    * entity. The keys are discriminators values.
@@ -91,12 +92,10 @@ class PolymorphicEntityDescriptor<E> implements EntityDescriptor<E> {
 
   @SuppressWarnings("unchecked")
   public Json.Object marshall(E entity, String view) {
-    // null
     if (entity == null) {
       return Json.NULL;
     }
 
-    // null safe
     EntityDescriptor<Object> descriptor =
         (EntityDescriptor<Object>) subDescriptorsByClass.get(entity.getClass());
     if (descriptor == null) {
@@ -122,7 +121,6 @@ class PolymorphicEntityDescriptor<E> implements EntityDescriptor<E> {
     return marshall((E) Array.get(array, index), view);
   }
 
-  @SuppressWarnings("unchecked")
   public void unmarshallArray(
       Object array, Json.Value value, int index, String view) {
     Array.set(array, index, unmarshall(value, view));
@@ -130,14 +128,17 @@ class PolymorphicEntityDescriptor<E> implements EntityDescriptor<E> {
 
   @SuppressWarnings("unchecked")
   public Json.String marshallInline(E entity, String view) {
-    // null
     if (entity == null) {
       return Json.NULL;
     }
 
-    // null safe
     EntityDescriptor<Object> descriptor =
         (EntityDescriptor<Object>) subDescriptorsByClass.get(entity.getClass());
+    if (descriptor == null) {
+      throw new IllegalArgumentException(
+          "Unmarshalled entity of class " + entity.getClass() + "is not " +
+          "a valid subclass entity of " + returnedClass);
+    }
 
     return string(descriptor.getDiscriminator());
   }
@@ -163,7 +164,6 @@ class PolymorphicEntityDescriptor<E> implements EntityDescriptor<E> {
     });
   }
 
-  @SuppressWarnings("unchecked")
   public void unmarshall(Object entity,
       FieldDescriptor fieldDescriptor, Json.Value marshalled, String view) {
     fieldDescriptor.setFieldValue(
