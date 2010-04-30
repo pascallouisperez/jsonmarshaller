@@ -224,9 +224,9 @@ public class EntityUnmarshallingTest {
   @Test
   public void testUserType() throws Exception {
     EntityWithURL e =
-      unmarshall(EntityWithURL.class, "{\"url\":\"http://code.twolattes.com\"}");
+      unmarshall(EntityWithURL.class, "{\"url\":\"http://www.google.com\"}");
 
-    assertEquals(new URL("http://code.twolattes.com"), e.getUrl());
+    assertEquals(new URL("http://www.google.com"), e.getUrl());
   }
 
   @Test
