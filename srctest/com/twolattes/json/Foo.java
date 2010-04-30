@@ -13,6 +13,8 @@ package com.twolattes.json;
 
    @Value int getFoo() { return foo; }
 
+   @Value void setFoo(int foo) { this.foo = foo; }
+
 }
 
 
