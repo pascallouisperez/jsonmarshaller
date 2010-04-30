@@ -5,11 +5,13 @@ import static com.twolattes.json.TwoLattes.createEntityMarshaller;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.twolattes.json.EntityMarshaller;
 import com.twolattes.json.Json;
 
+@Ignore
 public class Inheritance4Test {
   private EntityMarshaller<Shape> marshaller;
 
