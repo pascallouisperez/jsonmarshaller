@@ -13,6 +13,7 @@ import com.twolattes.json.gettersetter.GetterSetterTest;
 import com.twolattes.json.inheritance1.Inheritance1Test;
 import com.twolattes.json.inheritance2.Inheritance2Test;
 import com.twolattes.json.inheritance3.Inheritance3Test;
+import com.twolattes.json.inheritance4.Inheritance4Test;
 import com.twolattes.json.inheritanceerror.InheritanceErrorTest;
 import com.twolattes.json.nativetypes.BigDecimalTest;
 import com.twolattes.json.nativetypes.JavaTypeMarshallingTest;
@@ -40,6 +41,7 @@ import com.twolattes.json.visibility2.Visibility2Test;
   Inheritance1Test.class,
   Inheritance2Test.class,
   Inheritance3Test.class,
+  Inheritance4Test.class,
   InheritanceErrorTest.class,
   Visibility1Test.class,
   Visibility2Test.class,
