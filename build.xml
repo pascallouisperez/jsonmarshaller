@@ -11,10 +11,11 @@
       <pathelement location="lib-test/junit/junit-4.3.1.jar" />
     </classpath>
   </taskdef>
+  <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+      classpath="lib-test/jarjar-1.0.jar" />
 
   <!-- project properties -->
-  <property name="author" value="Pascal-Louis Perez (pascallouisperez@gmail.com)" />
-  <property name="version" value="0.19" />
+  <property name="version" value="0.20" />
   
   <!-- initialize the build  -->
   <target name="init">
@@ -29,8 +30,23 @@
 
   <!-- compile -->
   <target name="compile" depends="init">
-    <javac destdir="target/bin" srcdir="src" classpath="${cp}" source="1.5"
-        target="1.5" debug="true" debuglevel="source,lines" />
+    <javac destdir="target/bin" srcdir="src" source="1.5"
+        target="1.5" debug="true" debuglevel="source,lines">
+      <classpath>
+        <pathelement location="lib/asm-2.2.3.jar" />
+        <pathelement location="lib/asm-attrs-2.2.3.jar" />
+        <pathelement location="lib/asm-commons-2.2.3.jar" />
+      </classpath>
+    </javac>
+    <jarjar destfile="target/dist/json-${version}.jar" basedir="target/bin">
+      <manifest>
+        <attribute name="Built-By" value="Pascal-Louis Perez (pascallouisperez@gmail.com)" />
+      </manifest>
+      <zipfileset src="lib/asm-2.2.3.jar"/>
+      <zipfileset src="lib/asm-attrs-2.2.3.jar"/>
+      <zipfileset src="lib/asm-commons-2.2.3.jar"/>
+      <rule pattern="org.objectweb.asm.**" result="com.twolattes.json.asm.@1"/>
+    </jarjar>
   </target>
 
   <!-- compile tests -->
@@ -49,9 +65,14 @@
   <!-- run the tests -->
   <target name="test" depends="compile,compile-test">
     <junit printsummary="yes" haltonfailure="yes" fork="true">
-      <classpath path="${cp}" />
-      <classpath path="target/bin" />
-      <classpath path="target/bintest" />
+      <classpath>
+        <pathelement location="target/dist/json-${version}.jar" />
+      </classpath>
+      <classpath>
+        <pathelement path="target/bintest"/>
+        <pathelement location="lib/google-collections/google-collect-snapshot-20071022.jar" />
+        <pathelement location="lib-test/junit-4.3.1.jar" />
+      </classpath>
       <formatter type="xml" usefile="true" />
       <test name="com.twolattes.json.AllJsonTests" todir="target/reports" />
     </junit>
@@ -66,11 +87,6 @@
 
   <!-- dist -->
   <target name="dist" depends="init,compile">
-    <jar destfile="target/dist/json-${version}.jar" basedir="target/bin">
-      <manifest>
-        <attribute name="Built-By" value="${author}" />
-      </manifest>
-    </jar>
     <zip destfile="target/dist/json-dist-${version}.zip">
       <zipfileset file="target/dist/json-${version}.jar" />
       <zipfileset file="build.xml" />
