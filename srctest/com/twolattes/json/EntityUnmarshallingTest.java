@@ -370,16 +370,19 @@ public class EntityUnmarshallingTest {
   * in effect duplicating the value under two different names in the serialized form. This is useful when
   * migrating from an old to a new protocol (i.e. renaming with no down time).
   */
+  // TODO (julien): the reason this test is flaky is because precedence is not
+  // deterministic
   @Test
   public void testDifferentFieldGetterSetterName() {
-    assertEquals(unmarshall(Foo.class, "{\"bar\":42.0,\"foo\":42.0}").foo, 42);
+    for (int i = 0; i < 1000000; i++) {
+      assertEquals(unmarshall(Foo.class, "{\"bar\":42.0,\"foo\":42.0}").foo, 42);
 
-    // The following two tests are not strictly necessary because the field name and method name should ALWAYS be
-    // identical. However, these tests are here to check that the field name takes precedence over the getter/setter
-    // names.
-    assertEquals(unmarshall(Foo.class, "{\"bar\":0.0,\"foo\":42.0}").foo, 0);
-    assertEquals(unmarshall(Foo.class, "{\"bar\":42.0,\"foo\":0.0}").foo, 42);
-    // TODO flaky: NPE GetSetFieldDescriptor:57
+      // The following two tests are not strictly necessary because the field name and method name should ALWAYS be
+      // identical. However, these tests are here to check that the field name takes precedence over the getter/setter
+      // names.
+      assertEquals(unmarshall(Foo.class, "{\"bar\":0.0,\"foo\":42.0}").foo, 0);
+      assertEquals(unmarshall(Foo.class, "{\"bar\":42.0,\"foo\":0.0}").foo, 42);
+    }
   }
 
   public static <T> T unmarshall(Class<T> clazz, String json) {
