@@ -128,4 +128,15 @@ public class Visibility1Test {
     assertNotNull(e);
     assertEquals(4, e.value);
   }
+
+  @Test
+  public void testPackagePrivateClassPublicConstuctorU() throws Exception {
+    PackagePrivateClassPublicConstuctor e =
+      createEntityMarshaller(PackagePrivateClassPublicConstuctor.class)
+        .unmarshall(Json.fromString("{\"value\":4}"));
+
+    assertNotNull(e);
+    assertEquals(4, e.value);
+  }
+
 }

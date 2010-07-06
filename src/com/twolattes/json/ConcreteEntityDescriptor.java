@@ -6,7 +6,6 @@ import static java.lang.String.format;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -62,9 +61,7 @@ final class ConcreteEntityDescriptor<T> extends AbstractDescriptor<T, Json.Value
       throw new IllegalArgumentException(
           format("%s does not have a no argument constructor.", implementedBy));
     }
-    if (!Modifier.isPublic(constructor.getModifiers())) {
-      constructor.setAccessible(true);
-    }
+    constructor.setAccessible(true);
     // name conflicts
     Set<Json.String> names = new HashSet<Json.String>();
     parent = this;

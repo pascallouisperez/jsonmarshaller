@@ -3,7 +3,6 @@ package com.twolattes.json;
 import static com.twolattes.json.Json.string;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -43,9 +42,7 @@ class EntityFieldVisitor extends EmptyVisitor implements FieldVisitor {
 
     // accessibility of the field
     if (field.getAnnotation(Value.class) != null) {
-      if (!Modifier.isPublic(field.getModifiers())) {
-        field.setAccessible(true);
-      }
+      field.setAccessible(true);
     }
   }
 
