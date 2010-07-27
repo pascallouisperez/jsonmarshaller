@@ -1,5 +1,7 @@
 package com.twolattes.json;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -31,6 +33,16 @@ class DescriptorFactory {
     if (annotation == null) {
       throw new IllegalArgumentException(c + " is not an entity. Entities must"
           + " be annotated with @Entity.");
+    }
+
+    // entities must have a no-argument constructor
+    Class<?> entityEnventuallyConstructed = c.isInterface() ?
+        annotation.implementedBy() : c;
+    try {
+      entityEnventuallyConstructed.getDeclaredConstructor();
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException(format(
+          "%s does not have a no argument constructor", entityEnventuallyConstructed));
     }
 
     // may be creating it already
