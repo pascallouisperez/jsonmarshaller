@@ -4,6 +4,7 @@ import static java.lang.String.format;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -111,6 +112,9 @@ class DescriptorFactory {
       if (parentAnnotation != null) {
         parent = createConcreteEntityDescriptor(parentClass, store, types);
         break;
+      } else {
+        ensureNoValueInNonEntity(parentClass, parentClass.getDeclaredFields());
+        ensureNoValueInNonEntity(parentClass, parentClass.getDeclaredMethods());
       }
       parentClass = parentClass.getSuperclass();
     }
@@ -149,6 +153,18 @@ class DescriptorFactory {
     } finally {
       if (in != null) {
         in.close();
+      }
+    }
+  }
+
+  private void ensureNoValueInNonEntity(
+      Class<?> entityClass, AccessibleObject[] accessibleObjects) {
+    for (AccessibleObject object : accessibleObjects) {
+      if (object.getAnnotation(Value.class) != null) {
+        throw new IllegalArgumentException(format(
+            "cannot have @%s on non-entity %s",
+            Value.class.getSimpleName(),
+            entityClass));
       }
     }
   }

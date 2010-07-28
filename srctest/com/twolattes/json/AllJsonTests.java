@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.twolattes.json.bugreports.DisallowValueOnNonEntitiesTest;
 import com.twolattes.json.bugreports.MissingNoArgumentConstructorTest;
 import com.twolattes.json.bugreports.OrderStatusTest;
 import com.twolattes.json.bugreports.PolymorphicHierarchyInlinedTest;
@@ -60,6 +61,7 @@ import com.twolattes.json.visibility2.Visibility2Test;
   OptionalTest.class,
   PolymorphicHierarchyInlinedTest.class,
   MissingNoArgumentConstructorTest.class,
+  DisallowValueOnNonEntitiesTest.class,
 
   // Json
   JsonTest.class,
