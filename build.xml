@@ -15,7 +15,7 @@
       classpath="lib-test/jarjar-1.0.jar" />
 
   <!-- project properties -->
-  <property name="version" value="0.20" />
+  <property name="version" value="0.21" />
   
   <!-- initialize the build  -->
   <target name="init">
