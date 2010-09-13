@@ -28,6 +28,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JsonTest {
@@ -643,6 +644,12 @@ public class JsonTest {
 
     assertJsonEquals(sample, sampleOrgJson);
     assertJsonEquals(samplePretty, sampleOrgJson);
+  }
+
+  @Test
+  @Ignore("issue 42")
+  public void ambiguousString() throws Exception {
+    assertEquals(Json.string("foo"), Json.fromString("foo"));
   }
 
   private static List<Json.Value> generateValues(String json) throws Exception {
