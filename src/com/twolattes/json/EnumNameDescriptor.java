@@ -12,7 +12,7 @@ class EnumNameDescriptor extends AbstractDescriptor<Enum, Json.String> {
   private final Class<? extends Enum> enumClass;
 
   EnumNameDescriptor(Class<? extends Enum> c) {
-    super(Enum.class);
+    super(Enum.class, Json.String.class);
     enumClass = c;
   }
 

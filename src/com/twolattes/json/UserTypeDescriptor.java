@@ -14,7 +14,7 @@ class UserTypeDescriptor<E, J extends Json.Value> extends AbstractDescriptor<E, 
   private final JsonType<E, J> type;
 
   public UserTypeDescriptor(JsonType<E, J> type) {
-    super(extractReturnType(type));
+    super(extractReturnType(type), extractMarshalledType(type));
     this.type = type;
   }
 
@@ -22,6 +22,13 @@ class UserTypeDescriptor<E, J extends Json.Value> extends AbstractDescriptor<E, 
   private static <E> Class<E> extractReturnType(JsonType<E, ?> jsonType) {
     return (Class<E>) extractRawType(
         getActualTypeArgument(jsonType.getClass(), JsonType.class, 0));
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <J extends Json.Value> Class<J> extractMarshalledType(
+      JsonType<?, J> jsonType) {
+    return (Class<J>) extractRawType(
+        getActualTypeArgument(jsonType.getClass(), JsonType.class, 1));
   }
 
   @Override

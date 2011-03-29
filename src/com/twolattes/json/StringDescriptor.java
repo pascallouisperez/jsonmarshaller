@@ -11,7 +11,7 @@ class StringDescriptor extends AbstractDescriptor<String, Json.String> {
   final static StringDescriptor STRING_DESC = new StringDescriptor();
 
   private StringDescriptor() {
-    super(String.class);
+    super(String.class, Json.String.class);
   }
 
   public final Json.String marshall(String entity, String view) {

@@ -14,10 +14,13 @@ final class MapDescriptor extends AbstractDescriptor<Map, Json.Object> {
 
   private final MapType mapType;
   final Descriptor<Object, Json.Value> valueDescriptor;
+  private final Descriptor<Object, Json.Value> keyDescriptor;
 
-  MapDescriptor(MapType mapType, Descriptor<?, ?> valueDescriptor) {
-    super(Map.class);
+  MapDescriptor(MapType mapType, Descriptor<?, ?> keyDescriptor,
+      Descriptor<?, ?> valueDescriptor) {
+    super(Map.class, Json.Object.class);
     this.mapType = mapType;
+    this.keyDescriptor = (Descriptor<Object, Json.Value>) keyDescriptor;
     this.valueDescriptor = (Descriptor<Object, Json.Value>) valueDescriptor;
   }
 
@@ -28,7 +31,8 @@ final class MapDescriptor extends AbstractDescriptor<Map, Json.Object> {
 
   @Override
   public String toString() {
-    return "Map<" + valueDescriptor.toString() + ">";
+    return "Map<" + keyDescriptor.toString()
+        + "," + valueDescriptor.toString() + ">";
   }
 
   @Override
@@ -40,27 +44,35 @@ final class MapDescriptor extends AbstractDescriptor<Map, Json.Object> {
     if (entity == null) {
       return NULL;
     } else {
-      Map<String, Object> map = entity;
+      boolean shouldWrapKeys = shouldWrapKeys(keyDescriptor);
+      Map<Object, Object> map = entity;
       Json.Object o = Json.object();
-      for (Entry<String, Object> e : map.entrySet()) {
+      for (Entry<Object, Object> e : map.entrySet()) {
+        Json.Value marshalledKey = keyDescriptor.marshall(e.getKey(), null);
         o.put(
-            Json.string(e.getKey()),
+            shouldWrapKeys ?
+                Json.string(marshalledKey.toString()) :
+                (Json.String) marshalledKey,
             valueDescriptor.marshall(e.getValue(), view));
       }
       return o;
     }
   }
 
-  public Map<String, ?> unmarshall(Json.Object object, String view) {
+  public Map<?, ?> unmarshall(Json.Object object, String view) {
     if (object.equals(NULL)) {
       return null;
     } else {
-      Map<String, Object> map = mapType.newMap();
+      boolean shouldUnwrapKeys = shouldWrapKeys(keyDescriptor);
+      Map<Object, Object> map = mapType.newMap();
       Iterator<Json.String> i = object.keySet().iterator();
       while (i.hasNext()) {
         Json.String key = i.next();
-        map.put(key.getString(), valueDescriptor.unmarshall(
-            object.get(key), view));
+        map.put(
+            keyDescriptor.unmarshall(
+                shouldUnwrapKeys ?
+                    Json.fromString(key.getString()) : key, null),
+            valueDescriptor.unmarshall(object.get(key), view));
       }
       return map;
     }
@@ -68,6 +80,20 @@ final class MapDescriptor extends AbstractDescriptor<Map, Json.Object> {
 
   Descriptor<Object, Json.Value> getValueDescriptor() {
     return valueDescriptor;
+  }
+
+  static boolean shouldWrapKeys(Descriptor<?, ?> descriptor) {
+    return !((Class<?>) descriptor.getMarshalledClass())
+      .equals(Json.String.class);
+  }
+
+  static boolean shouldWrapKeys(Marshaller<?> marshaller) {
+    if (marshaller instanceof DescriptorBackedMarshaller) {
+      DescriptorBackedMarshaller<?, ?> castedMarshaller =
+        (DescriptorBackedMarshaller<?, ?>) marshaller;
+      return shouldWrapKeys(castedMarshaller.getDescriptor());
+    }
+    return true;
   }
 
 }

@@ -15,6 +15,10 @@ class InlinedEntityDescriptor<E> implements EntityDescriptor<E> {
     return delegate.getReturnedClass();
   }
 
+  public Class<? extends Json.Value> getMarshalledClass() {
+    return delegate.getMarshalledClass();
+  }
+
   public boolean isInlineable() {
     return delegate.isInlineable();
   }

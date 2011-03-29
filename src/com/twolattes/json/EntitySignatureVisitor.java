@@ -188,12 +188,11 @@ class EntitySignatureVisitor implements SignatureVisitor {
                 null);
 
       case map:
-        if (next.size() == 2
-            && next.get(0).getDescriptor().left.getReturnedClass().equals(
-                String.class)) {
+        if (next.size() == 2) {
           return Pair.<Descriptor, Entity> of(
               new MapDescriptor(
                   MapType.fromClass(mapClass),
+                  next.get(0).getDescriptor().left,
                   inlineEntityIfNecessary(next.get(1).getDescriptor())),
               null);
         } else {

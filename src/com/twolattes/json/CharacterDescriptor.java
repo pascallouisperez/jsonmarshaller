@@ -45,7 +45,7 @@ class CharacterDescriptor extends AbstractDescriptor<Character, Json.String> {
   };
 
   private CharacterDescriptor(Class<Character> klass) {
-    super(klass);
+    super(klass, Json.String.class);
   }
 
   public final Json.String marshall(Character entity, String view) {

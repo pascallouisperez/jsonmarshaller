@@ -8,18 +8,24 @@ import java.lang.reflect.Array;
  */
 abstract class AbstractDescriptor<E, J extends Json.Value> implements Descriptor<E, J> {
   private final Class<?> klass;
+  private final Class<? extends J> marshalledClass;
 
   /**
    * Default constructor.
    * @param klass the returned class of this descriptor, see
    *     {@link #getReturnedClass()}
    */
-  AbstractDescriptor(Class<? extends E> klass) {
+  AbstractDescriptor(Class<? extends E> klass, Class<? extends J> marshalledClass) {
     this.klass = klass;
+    this.marshalledClass = marshalledClass;
   }
 
   public Class<?> getReturnedClass() {
     return klass;
+  }
+
+  public Class<? extends Json.Value> getMarshalledClass() {
+    return marshalledClass;
   }
 
   /**

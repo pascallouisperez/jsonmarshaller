@@ -16,7 +16,7 @@ class EnumOrdinalDescriptor extends AbstractDescriptor<Enum, Json.Number> {
   private final Enum[] constants;
 
   EnumOrdinalDescriptor(Class<? extends Enum> c) {
-    super(Enum.class);
+    super(Enum.class, Json.Number.class);
     enumClass = c;
     constants = enumClass.getEnumConstants();
   }

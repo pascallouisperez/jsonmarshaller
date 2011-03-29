@@ -14,6 +14,11 @@ interface Descriptor<E, J extends Json.Value> {
   Class<?> getReturnedClass();
 
   /**
+   * Returns the {@link Class} of the marshalled value.
+   */
+  Class<? extends Json.Value> getMarshalledClass();
+
+  /**
    * Returns whether the described object is inlineable.
    * @return {@code true} if the object is inlineable, {@code false} otherwise
    */

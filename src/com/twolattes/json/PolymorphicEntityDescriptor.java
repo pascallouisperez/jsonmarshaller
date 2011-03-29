@@ -86,6 +86,10 @@ class PolymorphicEntityDescriptor<E> implements EntityDescriptor<E> {
     return returnedClass;
   }
 
+  public Class<? extends Json.Value> getMarshalledClass() {
+    return Json.Object.class;
+  }
+
   String getDiscriminatorName() {
     return discriminatorName;
   }

@@ -16,7 +16,7 @@ class CollectionDescriptor extends AbstractDescriptor<Collection, Json.Array> {
 
   CollectionDescriptor(Class<? extends Collection> collectionClass,
       Descriptor<? extends Object, ? extends Object> collectionDescriptor) {
-    super(Collection.class);
+    super(Collection.class, Json.Array.class);
     this.collectionDescriptor = (Descriptor<Object, Json.Value>) collectionDescriptor;
     this.collectionType = fromClass(collectionClass);
   }

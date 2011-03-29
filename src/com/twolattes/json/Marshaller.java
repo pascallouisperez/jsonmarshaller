@@ -63,6 +63,16 @@ public interface Marshaller<T> {
   Json.Object marshallMap(Map<String, ? extends T> map, String view);
 
   /**
+   * Marshalls a map of {@code T} to its JSON object representation. Keys are
+   * marshalled using the specified marshaller and wrapped into JSON strings if
+   * necessary.
+   * @param map the map to marshall. Values may be {@code null} but keys may not.
+   * @param keyMarshaller the marshaller used to marshall the keys.
+   * @return a JSON object
+   */
+  <K> Json.Object marshallMap(Map<K, ? extends T> map, Marshaller<K> keyMarshaller);
+
+  /**
    * Unmarshalls the JSON representation of a {@code T}.
    * @param value a JSON value
    * @return the unmarshalled object
@@ -100,6 +110,16 @@ public interface Marshaller<T> {
    * @return the unmarshalled map
    */
   Map<String, T> unmarshallMap(Json.Object object);
+
+  /**
+   * Unmarshalls a JSON object representation of a map of {@code T}. Keys are
+   * unmarshalled using the specified marshaller and unwrapped from JSON strings if
+   * necessary.
+   * @param object a JSON object
+   * @param keyMarshaller the marshaller used to unmarshall the keys.
+   * @return the unmarshalled map
+   */
+  <K> Map<K, T> unmarshallMap(Json.Object object, Marshaller<K> keyMarshaller);
 
   /**
    * Unmarshalls a JSON object representation of a string-keyed map of {@code T}.

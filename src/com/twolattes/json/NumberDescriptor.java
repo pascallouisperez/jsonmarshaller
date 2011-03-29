@@ -14,7 +14,7 @@ abstract class NumberDescriptor<N extends Number>
     extends AbstractDescriptor<N, Json.Number> {
 
   public NumberDescriptor(Class<? extends N> klass) {
-    super(klass);
+    super(klass, Json.Number.class);
   }
 
   public final Json.Number marshall(N entity, String view) {

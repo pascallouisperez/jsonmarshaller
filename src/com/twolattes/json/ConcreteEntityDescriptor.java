@@ -32,7 +32,7 @@ final class ConcreteEntityDescriptor<T> extends AbstractDescriptor<T, Json.Value
   ConcreteEntityDescriptor(Class<T> entity,
       Set<FieldDescriptor> fieldDescriptors,
       ConcreteEntityDescriptor<?> parent) {
-    super(entity);
+    super(entity, Json.Object.class);
     Entity annotation = entity.getAnnotation(Entity.class);
     this.discriminator = annotation.discriminator();
     this.entity = entity;

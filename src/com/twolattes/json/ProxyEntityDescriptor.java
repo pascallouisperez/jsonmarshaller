@@ -31,6 +31,10 @@ final class ProxyEntityDescriptor<E> implements EntityDescriptor<E> {
     return getDescriptor().getReturnedClass();
   }
 
+  public Class<? extends Json.Value> getMarshalledClass() {
+    return getDescriptor().getMarshalledClass();
+  }
+
   public boolean isInlineable() {
     return getDescriptor().isInlineable();
   }

@@ -1,5 +1,7 @@
 package com.twolattes.json;
 
+import static com.twolattes.json.MapDescriptor.shouldWrapKeys;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -58,7 +60,7 @@ class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
   }
 
   public Json.Object marshallMap(Map<String, ? extends T> map) {
-    return marshallMap(map, null);
+    return marshallMap(map, (String) null);
   }
 
   public Json.Object marshallMap(Map<String, ? extends T> map, String view) {
@@ -93,7 +95,7 @@ class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
   }
 
   public Map<String, T> unmarshallMap(Json.Object object) {
-    return unmarshallMap(object, null);
+    return unmarshallMap(object, (String) null);
   }
 
   public Map<String, T> unmarshallMap(Json.Object object, String view) {
@@ -116,6 +118,39 @@ class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
         generator.yield(unmarshall(value));
       }
     });
+  }
+
+  public <K> Json.Object marshallMap(Map<K, ? extends T> map,
+      Marshaller<K> keyMarshaller) {
+    if (map.isEmpty()) {
+      return Json.object();
+    }
+    boolean shouldWrapKeys = shouldWrapKeys(keyMarshaller);
+    Json.Object o = Json.object();
+    for (K key : map.keySet()) {
+      Json.Value value = keyMarshaller.marshall(key);
+      o.put(
+          shouldWrapKeys ?
+              Json.string(value.toString()) : (Json.String) value,
+          descriptor.marshall(map.get(key), null));
+    }
+    return o;
+  }
+
+  public <K> Map<K, T> unmarshallMap(Json.Object object,
+      Marshaller<K> keyMarshaller) {
+    if (object.isEmpty()) {
+      return Collections.emptyMap();
+    }
+    boolean shouldUnwrapKeys = shouldWrapKeys(keyMarshaller);
+    Map<K, T> map = new HashMap<K, T>(object.size());
+    for (Json.String key : object.keySet()) {
+      map.put(
+          keyMarshaller.unmarshall(
+              shouldUnwrapKeys ? Json.fromString(key.getString()) : key),
+          clazz.cast(descriptor.unmarshall(object.get(key), null)));
+    }
+    return map;
   }
 
 }

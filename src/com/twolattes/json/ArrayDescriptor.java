@@ -10,7 +10,7 @@ class ArrayDescriptor extends AbstractDescriptor<Object, Json.Value> {
 
   @SuppressWarnings("unchecked")
   ArrayDescriptor(Descriptor elementsDescriptor) {
-    super(Array.class);
+    super(Array.class, Json.Array.class);
     this.elementsDescriptor = elementsDescriptor;
   }
 
@@ -50,4 +50,5 @@ class ArrayDescriptor extends AbstractDescriptor<Object, Json.Value> {
   public String toString() {
     return elementsDescriptor + "[]";
   }
+
 }

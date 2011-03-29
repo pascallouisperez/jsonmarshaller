@@ -36,7 +36,7 @@ class BooleanDescriptor extends AbstractDescriptor<Boolean, Json.Boolean> {
   };
 
   private BooleanDescriptor(Class<Boolean> klass) {
-    super(klass);
+    super(klass, Json.Boolean.class);
   }
 
   public final Json.Boolean marshall(Boolean entity, String view) {
