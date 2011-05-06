@@ -16,7 +16,7 @@
 
   <!-- project properties -->
   <property name="version" value="0.21" />
-  
+
   <!-- initialize the build  -->
   <target name="init">
     <antclipse produce="classpath" idcontainer="eclipse.cp" />
@@ -32,20 +32,11 @@
   <target name="compile" depends="init">
     <javac destdir="target/bin" srcdir="src" source="1.5"
         target="1.5" debug="true" debuglevel="source,lines">
-      <classpath>
-        <pathelement location="lib/asm-2.2.3.jar" />
-        <pathelement location="lib/asm-attrs-2.2.3.jar" />
-        <pathelement location="lib/asm-commons-2.2.3.jar" />
-      </classpath>
     </javac>
     <jarjar destfile="target/dist/json-${version}.jar" basedir="target/bin">
       <manifest>
         <attribute name="Built-By" value="Pascal-Louis Perez (pascallouisperez@gmail.com)" />
       </manifest>
-      <zipfileset src="lib/asm-2.2.3.jar"/>
-      <zipfileset src="lib/asm-attrs-2.2.3.jar"/>
-      <zipfileset src="lib/asm-commons-2.2.3.jar"/>
-      <rule pattern="org.objectweb.asm.**" result="com.twolattes.json.asm.@1"/>
     </jarjar>
   </target>
 
@@ -110,6 +101,6 @@
     <gzip zipfile="target/dist/json-dist-${version}.tar.gz" src="target/dist/json-dist-${version}.tar" />
     <delete file="target/dist/json-dist-${version}.tar" />
   </target>
-  
+
   <target name="continuous-build" depends="test,dist" />
 </project>
