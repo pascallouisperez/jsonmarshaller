@@ -1,6 +1,5 @@
 package com.twolattes.json;
 
-import com.twolattes.json.types.JsonType;
 
 class OptionalFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
@@ -41,10 +40,6 @@ class OptionalFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
   public Json.String getJsonName() {
     return delegate.getJsonName();
-  }
-
-  public JsonType<?, ?> getType() {
-    return delegate.getType();
   }
 
   public boolean isInView(String view) {

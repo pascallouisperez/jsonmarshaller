@@ -7,14 +7,14 @@ import java.lang.annotation.Target;
 
 /**
  * Describes a JSON entity.
- * @author Pascal
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.TYPE})
 public @interface Entity {
   /**
-   * Whether this entity should be inline or not. An entity can be inline
-   * only if it has a single {@link Value}.
+   * Whether this entity should always be inline. An entity can be inline
+   * only if it has a single {@link Value}. If an entity should sometimes be
+   * inline and sometimes not, use {@link Value#inline} instead.
    */
   boolean inline() default false;
 
@@ -39,7 +39,7 @@ public @interface Entity {
 
   /**
    * The value of the discriminator for this entity. This value is used if the
-   * entity is mentionned in a parent's {@link #subclasses()} option.
+   * entity is mentioned in a parent's {@link #subclasses()} option.
    */
   String discriminator() default "";
 

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,15 +15,15 @@ import org.junit.Test;
 
 import com.twolattes.json.types.JsonType;
 
-
 public class DescriptorFactoryTest {
+
   @Test(expected = IllegalArgumentException.class)
-  public void testNotAnEntity() throws IOException {
+  public void testNotAnEntity() {
     create(NotAnEntity.class);
   }
 
   @Test
-  public void testBaseTypeEntity() throws IOException {
+  public void testBaseTypeEntity() {
     EntityDescriptor<?> d = create(BaseTypeEntity.class);
     assertEquals(BaseTypeEntity.class, d.getReturnedClass());
     assertEquals(8, d.getFieldDescriptors().size());
@@ -68,7 +67,7 @@ public class DescriptorFactoryTest {
   }
 
   @Test
-  public void testCollectionEntity() throws IOException {
+  public void testCollectionEntity() {
     EntityDescriptor<?> d = create(CollectionEntity.class);
     assertEquals(CollectionEntity.class, d.getReturnedClass());
     assertEquals(1, d.getFieldDescriptors().size());
@@ -82,12 +81,22 @@ public class DescriptorFactoryTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testContravariantCollectionEntity() throws IOException {
+  public void testContravariantCollectionEntity() {
     create(ContravariantCollectionEntity.class);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testVagueWildcardEntity() {
+    create(VagueWildcardEntity.class);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testGenericGetterSetterEntity() {
+    create(GenericGetterSetterEntity.class);
+  }
+
   @Test
-  public void testEnitityInEntity() throws IOException {
+  public void testEnitityInEntity() {
     EntityDescriptor<?> d = create(EntityInEntity.class);
     assertEquals(1, d.getFieldDescriptors().size());
     for (FieldDescriptor f : d.getFieldDescriptors()) {
@@ -100,7 +109,7 @@ public class DescriptorFactoryTest {
   }
 
   @Test
-  public void testInlinedEntity1() throws IOException {
+  public void testInlinedEntity1() {
     EntityDescriptor<?> d = create(User.class);
     assertEquals(1, d.getFieldDescriptors().size());
     for (FieldDescriptor f : d.getFieldDescriptors()) {
@@ -109,7 +118,7 @@ public class DescriptorFactoryTest {
   }
 
   @Test
-  public void testInlinedEntity2() throws IOException {
+  public void testInlinedEntity2() {
     EntityDescriptor<?> d = create(UserInlinedEmail.class);
     assertEquals(6, d.getFieldDescriptors().size());
     int visited = 0;
@@ -117,7 +126,7 @@ public class DescriptorFactoryTest {
       if (f.getFieldName().equals(string("email"))) {
         fieldDescriptorIsInline(f);
         visited++;
-      } else if (f.getFieldName().equals(string("inlineTwice"))) {
+      } else if (f.getFieldName().equals(string("inlineTrue"))) {
         fieldDescriptorIsInline(f);
         visited++;
       }
@@ -126,7 +135,7 @@ public class DescriptorFactoryTest {
   }
 
   @Test
-  public void testInlinedEntity3() throws IOException {
+  public void testInlinedEntity3() {
     EntityDescriptor<?> d = create(UserInlinedEmail.class);
     assertEquals(6, d.getFieldDescriptors().size());
     boolean visited = false;
@@ -142,7 +151,7 @@ public class DescriptorFactoryTest {
   }
 
   @Test
-  public void testInlinedEntity4() throws IOException {
+  public void testInlinedEntity4() {
     EntityDescriptor<?> d = create(DoublyInlined.class);
     boolean visited = false;
     for (FieldDescriptor f : d.getFieldDescriptors()) {
@@ -164,12 +173,12 @@ public class DescriptorFactoryTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testInlinedUninlineableEntity1() throws IOException {
+  public void testInlinedUninlineableEntity1() {
     create(Uninlineable1.class);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testInlinedUninlineableEntity2() throws IOException {
+  public void testInlinedUninlineableEntity2() {
     create(Uninlineable2.class);
   }
 
@@ -180,8 +189,8 @@ public class DescriptorFactoryTest {
     for (FieldDescriptor f : d.getFieldDescriptors()) {
       assertTrue(f.getDescriptor() instanceof MapDescriptor);
       MapDescriptor md = (MapDescriptor) f.getDescriptor();
-      assertTrue(md.valueDescriptor instanceof EntityDescriptor);
-      EntityDescriptor<?> ed = (EntityDescriptor<?>) md.valueDescriptor;
+      assertTrue(md.getValueDescriptor() instanceof EntityDescriptor);
+      EntityDescriptor<?> ed = (EntityDescriptor<?>) md.getValueDescriptor();
       assertEquals(Email.class, ed.getReturnedClass());
     }
   }
@@ -212,7 +221,7 @@ public class DescriptorFactoryTest {
 
   @Ignore("not yet implemented")
   @Test
-  public void testBExtendsA() throws IOException {
+  public void testBExtendsA() {
     EntityDescriptor<?> d = create(B.class);
     // TODO: make the test pass!
     assertEquals(2, d.getFieldDescriptors().size());
@@ -223,13 +232,13 @@ public class DescriptorFactoryTest {
 
   @Ignore("this is an uncommon case, will implement in next release")
   @Test
-  public void testAbisExtendsA() throws IOException {
+  public void testAbisExtendsA() {
     create(Abis.class);
     // TODO: make the test pass... what about name classes? field a in Abis and A!
     // this is the least important feature, can implement in v2 only
   }
 
-  private EntityDescriptor<?> create(Class<?> clazz) throws IOException {
+  private EntityDescriptor<?> create(Class<?> clazz) {
     return new DescriptorFactory().create(
         clazz, new DescriptorFactory.EntityDescriptorStore(),
         new HashMap<Type, Class<? extends JsonType<?, ?>>>()).left;

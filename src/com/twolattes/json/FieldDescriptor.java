@@ -1,6 +1,5 @@
 package com.twolattes.json;
 
-import com.twolattes.json.types.JsonType;
 
 interface FieldDescriptor {
 
@@ -73,11 +72,6 @@ interface FieldDescriptor {
    *         {@code false} otherwise.
    */
   boolean useOrdinal();
-
-  /**
-   * The type of the field.
-   */
-  JsonType<?, ?> getType();
 
   /**
    * Tests whether the field is in a specific view.

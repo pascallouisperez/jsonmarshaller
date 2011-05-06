@@ -191,7 +191,7 @@ public final class TwoLattes {
       return this;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public <T> Marshaller<T> createMarshaller(Class<T> clazz) {
       Pair<? extends Descriptor<?, ?>, ? extends JsonVisitor<?>> p = map.get(clazz);
       if (p != null) {

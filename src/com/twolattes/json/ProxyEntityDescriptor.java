@@ -49,12 +49,10 @@ final class ProxyEntityDescriptor<E> implements EntityDescriptor<E> {
     return (Json.Object) getDescriptor().marshall(fieldDescriptor, entity, view);
   }
 
-  @SuppressWarnings("unchecked")
   public Json.Value marshallArray(Object array, int index, String view) {
     return marshall(Array.get(array, index), view);
   }
 
-  @SuppressWarnings("unchecked")
   public void unmarshallArray(
       Object array, Json.Value value, int index, String view) {
     Array.set(array, index, unmarshall(value, view));
@@ -68,7 +66,6 @@ final class ProxyEntityDescriptor<E> implements EntityDescriptor<E> {
     return getDescriptor().unmarshall(object, view);
   }
 
-  @SuppressWarnings("unchecked")
   public void unmarshall(Object entity,
       FieldDescriptor fieldDescriptor, Json.Value marshalled, String view) {
     fieldDescriptor.setFieldValue(

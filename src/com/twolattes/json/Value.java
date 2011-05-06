@@ -19,15 +19,23 @@ public @interface Value {
   String name() default "";
 
   /**
-   * Whether to inline the value or not. Only base types and single valued
-   * entities can be inlined.
+   * Whether to inline the value or not. Only base types and single-valued
+   * entities can be inlined. Unnecessary and meaningless for fields of an
+   * {@link Entity @Entity} type that has {@link Entity#inline inline} set to
+   * {@code true}.
    */
   boolean inline() default false;
 
-  /** The type used to marshall and unmarshall this value.
+  /**
+   * A type that should be used to marshall and unmarshall this value.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   Class<? extends JsonType> type() default JsonType.class;
+
+  /**
+   * Types that should be used to marshall and unmarshall this value.
+   */
+  Class<? extends JsonType<?, ?>>[] types() default {};
 
   /**
    * Whether the value is optional or not.

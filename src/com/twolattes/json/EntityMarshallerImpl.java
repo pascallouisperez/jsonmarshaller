@@ -20,23 +20,18 @@ class EntityMarshallerImpl<T> implements EntityMarshaller<T> {
   private final EntityDescriptor<T> collectionDescriptor;
   private final Class<T> clazz;
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   EntityMarshallerImpl(
       Class<T> clazz,
       Map<Type, Class<? extends JsonType<?, ?>>> types) {
-    try {
-      this.clazz = clazz;
-      Pair<? extends EntityDescriptor, Entity> pair =
-          new DescriptorFactory().create(
-              clazz, new DescriptorFactory.EntityDescriptorStore(), types);
-      this.descriptor = pair.left;
-      this.collectionDescriptor =
-          pair.right != null && pair.right.inline() ?
-              new InlinedEntityDescriptor<T>(pair.left) :
-              pair.left;
-    } catch (IOException e) {
-      throw new IllegalArgumentException(clazz + " unreadable");
-    }
+    this.clazz = clazz;
+    Pair<? extends EntityDescriptor, Entity> pair = new DescriptorFactory()
+      .create(clazz, new DescriptorFactory.EntityDescriptorStore(), types);
+    this.descriptor = pair.left;
+    this.collectionDescriptor =
+        pair.right != null && pair.right.inline() ?
+            new InlinedEntityDescriptor<T>(pair.left) :
+            pair.left;
   }
 
   public Json.Object marshall(T entity) {

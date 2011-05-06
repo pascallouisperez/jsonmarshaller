@@ -134,4 +134,19 @@ public class GetterSetterTest {
     createMarshaller(GetterSetter6.class);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void getterSetter7() throws Exception {
+    createMarshaller(GetterSetter7.class);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getterSetter8() throws Exception {
+    createMarshaller(GetterSetter8.class);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getterSetter9() throws Exception {
+    createMarshaller(GetterSetter9.class);
+  }
+
 }

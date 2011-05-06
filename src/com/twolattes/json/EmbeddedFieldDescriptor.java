@@ -3,7 +3,6 @@ package com.twolattes.json;
 import java.util.Map.Entry;
 
 import com.twolattes.json.AbstractFieldDescriptor.GetSetFieldDescriptor;
-import com.twolattes.json.types.JsonType;
 
 class EmbeddedFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
@@ -53,10 +52,6 @@ class EmbeddedFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
   public Json.String getJsonName() {
     return delegate.getJsonName();
-  }
-
-  public JsonType<?, ?> getType() {
-    return delegate.getType();
   }
 
   public boolean isInView(String view) {

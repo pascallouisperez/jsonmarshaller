@@ -8,7 +8,7 @@ import java.lang.reflect.Array;
 class ArrayDescriptor extends AbstractDescriptor<Object, Json.Value> {
   private final Descriptor<Object, Json.Value> elementsDescriptor;
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   ArrayDescriptor(Descriptor elementsDescriptor) {
     super(Array.class, Json.Array.class);
     this.elementsDescriptor = elementsDescriptor;

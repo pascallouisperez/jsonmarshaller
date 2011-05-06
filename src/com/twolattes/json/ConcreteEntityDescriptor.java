@@ -51,7 +51,7 @@ final class ConcreteEntityDescriptor<T> extends AbstractDescriptor<T, Json.Value
       implementedBy = entity;
     }
 
-    // getting the no arg constructor and making it accessible
+    // getting the no-argument constructor and making it accessible
     try {
       this.constructor = (Constructor<T>) implementedBy.getDeclaredConstructor();
     } catch (SecurityException e) {
@@ -91,7 +91,7 @@ final class ConcreteEntityDescriptor<T> extends AbstractDescriptor<T, Json.Value
     return fieldDescriptors;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Set<FieldDescriptor> getAllFieldDescriptors() {
     Set<FieldDescriptor> result = new HashSet<FieldDescriptor>();
     for (FieldDescriptor fieldDescriptor : fieldDescriptors) {
@@ -137,7 +137,7 @@ final class ConcreteEntityDescriptor<T> extends AbstractDescriptor<T, Json.Value
   }
 
   @Override
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public Json.Value marshallInline(Object entity, String view) {
     if (entity == null) {
       return Json.NULL;

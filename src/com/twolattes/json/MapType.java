@@ -13,7 +13,7 @@ public enum MapType {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     Class<? extends Map> toClass() {
       return Map.class;
     }
@@ -26,7 +26,7 @@ public enum MapType {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     Class<? extends Map> toClass() {
       return SortedMap.class;
     }
@@ -34,10 +34,10 @@ public enum MapType {
 
   abstract <K, V> Map<K, V> newMap();
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   abstract Class<? extends Map> toClass();
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("rawtypes")
   static MapType fromClass(Class<? extends Map> klass) {
     if (SortedMap.class.isAssignableFrom(klass)) {
       return SORTED_MAP;

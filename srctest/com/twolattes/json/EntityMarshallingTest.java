@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONException;
@@ -95,6 +96,28 @@ public class EntityMarshallingTest {
 
   @Test
   public void testInlinedEntityUsingInlineAnnotation2() throws JSONException {
+    EntityMarshaller<UserInlinedEmail> marshaller = createEntityMarshaller(UserInlinedEmail.class);
+
+    EmailInline e = new EmailInline(); e.email = "plperez@stanford.edu";
+    UserInlinedEmail u = new UserInlinedEmail(); u.inlineFalse = e;
+
+    Json.Object o = marshaller.marshall(u, "2");
+    assertEquals(string("plperez@stanford.edu"), o.get(string("inlineFalse")));
+  }
+
+  @Test
+  public void testInlinedEntityUsingInlineAnnotation3() throws JSONException {
+    EntityMarshaller<UserInlinedEmail> marshaller = createEntityMarshaller(UserInlinedEmail.class);
+
+    EmailInline e = new EmailInline(); e.email = "plperez@stanford.edu";
+    UserInlinedEmail u = new UserInlinedEmail(); u.inlineTrue = e;
+
+    Json.Object o = marshaller.marshall(u, "3");
+    assertEquals(string("plperez@stanford.edu"), o.get(string("inlineTrue")));
+  }
+
+  @Test
+  public void testInlinedEntityUsingInlineAnnotation4() throws JSONException {
     EntityMarshaller<UserInlinedEmail> marshaller =
       createEntityMarshaller(UserInlinedEmail.class);
 
@@ -104,7 +127,7 @@ public class EntityMarshallingTest {
     u.emails.put("foo", e1);
     u.emails.put("bar", e2);
 
-    Json.Object o1 = marshaller.marshall(u, "2");
+    Json.Object o1 = marshaller.marshall(u, "4");
     Object emails = o1.get(string("emails"));
     assertTrue(emails instanceof Json.Object);
     Json.Object o2 = (Json.Object) emails;
@@ -113,50 +136,37 @@ public class EntityMarshallingTest {
   }
 
   @Test
-  public void testInlinedEntityUsingInlineAnnotation3() throws JSONException {
-    EntityMarshaller<UserInlinedEmail> marshaller = createEntityMarshaller(UserInlinedEmail.class);
-
-    EmailInline e = new EmailInline(); e.email = "plperez@stanford.edu";
-    UserInlinedEmail u = new UserInlinedEmail(); u.emailNoInline = e;
-
-    Json.Object o = marshaller.marshall(u, "3");
-    assertTrue(o.get(string("emailNoInline")) instanceof Json.Object);
-    Json.Object oe = (Json.Object) o.get(string("emailNoInline"));
-    assertEquals(string("plperez@stanford.edu"), oe.get(string("email")));
-  }
-
-  @Test
-  public void testInlinedEntityUsingInlineAnnotation4() throws JSONException {
+  public void testInlinedEntityUsingInlineAnnotation5() throws JSONException {
     EntityMarshaller<UserInlinedEmail> marshaller = createEntityMarshaller(UserInlinedEmail.class);
 
     EmailInline e = new EmailInline(); e.email = "plperez@stanford.edu";
     UserInlinedEmail u = new UserInlinedEmail(); u.emailsArray = new EmailInline[] { e };
 
-    Json.Object o = marshaller.marshall(u, "4");
+    Json.Object o = marshaller.marshall(u, "5");
     assertTrue(o.get(string("emailsArray")) instanceof Json.Array);
     Json.Array oe = (Json.Array) o.get(string("emailsArray"));
     assertEquals(string("plperez@stanford.edu"), oe.get(0));
   }
 
   @Test
-  public void testInlinedEntityUsingInlineAnnotation5() throws JSONException {
+  public void testInlinedEntityUsingInlineAnnotation6() throws JSONException {
     EntityMarshaller<UserInlinedEmail> marshaller = createEntityMarshaller(UserInlinedEmail.class);
 
     EmailInline e = new EmailInline(); e.email = "plperez@stanford.edu";
     UserInlinedEmail u = new UserInlinedEmail(); u.emailsList.add(e);
 
-    Json.Object o = marshaller.marshall(u, "5");
+    Json.Object o = marshaller.marshall(u, "6");
     assertTrue(o.get(string("emailsList")) instanceof Json.Array);
     Json.Array oe = (Json.Array) o.get(string("emailsList"));
     assertEquals(string("plperez@stanford.edu"), oe.get(0));
   }
 
   @Test
-  public void testInlinedEntityUsingInlineAnnotation6() throws JSONException {
+  public void testInlinedEntityUsingInlineAnnotation7() throws JSONException {
     EntityMarshaller<EmailInline> marshaller = createEntityMarshaller(EmailInline.class);
 
     EmailInline e = new EmailInline(); e.email = "plperez@stanford.edu";
-    ArrayList<EmailInline> list = new ArrayList<EmailInline>();
+    List<EmailInline> list = new ArrayList<EmailInline>();
     list.add(e);
 
     Json.Array a = marshaller.marshallList(list);

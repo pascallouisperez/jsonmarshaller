@@ -10,18 +10,18 @@ public class UserInlinedEmail {
   @Value(views = "1")
   public EmailInline email;
 
-  @Value(views = "2")
-  public Map<String, EmailInline> emails = new HashMap<String, EmailInline>();
+  @Value(views = "2", inline = false)  // "inline = false" ignored (false is default value)
+  public EmailInline inlineFalse;
 
-  @Value(views = "3", inline = false)
-  public EmailInline emailNoInline;
+  @Value(views = "3", inline = true)  // redundant with "inline = true" on @Entity
+  public EmailInline inlineTrue;
 
   @Value(views = "4")
-  public EmailInline[] emailsArray;
+  public Map<String, EmailInline> emails = new HashMap<String, EmailInline>();
 
   @Value(views = "5")
-  public List<EmailInline> emailsList = new ArrayList<EmailInline>();
+  public EmailInline[] emailsArray;
 
-  @Value(views = "6", inline = true)
-  public EmailInline inlineTwice;
+  @Value(views = "6")
+  public List<EmailInline> emailsList = new ArrayList<EmailInline>();
 }

@@ -9,14 +9,16 @@ import java.util.Map.Entry;
 /**
  * Descriptor for {@link Map}s.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 final class MapDescriptor extends AbstractDescriptor<Map, Json.Object> {
 
   private final MapType mapType;
-  final Descriptor<Object, Json.Value> valueDescriptor;
+  private final Descriptor<Object, Json.Value> valueDescriptor;
   private final Descriptor<Object, Json.Value> keyDescriptor;
 
-  MapDescriptor(MapType mapType, Descriptor<?, ?> keyDescriptor,
+  MapDescriptor(
+      MapType mapType,
+      Descriptor<?, ?> keyDescriptor,
       Descriptor<?, ?> valueDescriptor) {
     super(Map.class, Json.Object.class);
     this.mapType = mapType;

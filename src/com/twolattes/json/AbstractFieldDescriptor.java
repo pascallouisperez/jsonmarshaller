@@ -9,8 +9,6 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.twolattes.json.types.JsonType;
-
 /**
  * An entity's field descriptor.
  */
@@ -27,8 +25,6 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
   // fields that MUST be defined before the FieldDescriptor can (un)marshall
   private Descriptor<?, ?> descriptor;
-
-  private JsonType<?, ?> type;
 
   AbstractFieldDescriptor(String fieldName) {
     this.fieldName = string(fieldName);
@@ -76,10 +72,6 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
     return ordinal;
   }
 
-  public final JsonType<?, ?> getType() {
-    return type;
-  }
-
   public final Descriptor<?, ?> getDescriptor() {
     return descriptor;
   }
@@ -108,10 +100,6 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
 
   void setOrdinal(boolean ordinal) {
     this.ordinal = ordinal;
-  }
-
-  void setType(JsonType<?, ?> type) {
-    this.type = type;
   }
 
   void setDescriptor(Descriptor<?, ?> descriptor) {
@@ -349,50 +337,34 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
         @Override
         String name(Method m) {
           if (m.getName().charAt(0) == 'i') {
-            StringBuilder builder = new StringBuilder();
-            builder.append(Character.toLowerCase(m.getName().charAt(2)));
-            builder.append(m.getName().substring(3));
-            return builder.toString();
+            return Character.toLowerCase(m.getName().charAt(2)) + m.getName().substring(3);
           } else {
             return SETTER.name(m);
           }
-        }
-
-        @Override
-        void store(GetSetFieldDescriptor a, Method m) {
-          m.setAccessible(true);
-          a.getter = m;
         }
       },
 
       SETTER {
         @Override
         String name(Method m) {
-          StringBuilder builder = new StringBuilder();
-          builder.append(Character.toLowerCase(m.getName().charAt(3)));
-          builder.append(m.getName().substring(4));
-          return builder.toString();
-        }
-
-        @Override
-        void store(GetSetFieldDescriptor a, Method m) {
-          m.setAccessible(true);
-          a.setter = m;
+          return Character.toLowerCase(m.getName().charAt(3)) + m.getName().substring(4);
         }
       };
 
       abstract String name(Method m);
-
-      abstract void store(GetSetFieldDescriptor a, Method m);
     }
 
-    private Method getter;
+    private final Method getter;
+    private final Method setter;
 
-    private Method setter;
-
-    GetSetFieldDescriptor(Type t, Method m) {
-      super(t.name(m));
-      t.store(this, m);
+    GetSetFieldDescriptor(Method getter, Method setter) {
+      super(getter != null ? Type.GETTER.name(getter) : Type.SETTER.name(setter));
+      this.getter = getter;
+      this.setter = setter;
+      getter.setAccessible(true);
+      if (setter != null) {
+        setter.setAccessible(true);
+      }
     }
 
     public Object getFieldValue(Object instance) {
@@ -416,15 +388,10 @@ abstract class AbstractFieldDescriptor extends DefaultBoxingFieldDescriptor {
         throw new IllegalStateException(e);
       } catch (InvocationTargetException e) {
         throw new IllegalStateException(e);
+      } catch (NullPointerException e) {
+        throw new IllegalStateException(
+            "No setter with @Value corresponding to " + getter, e);
       }
-    }
-
-    void setGetter(Method getter) {
-      Type.GETTER.store(this, getter);
-    }
-
-    void setSetter(Method setter) {
-      Type.SETTER.store(this, setter);
     }
 
     @Override

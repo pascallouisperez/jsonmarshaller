@@ -29,6 +29,7 @@ public class EntityRequiringTypeRegistration2 {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     protected Id<?> nullSafeUnmarshall(final Json.Number object) {
       return new Id() {{ this.id = object.getNumber().longValue(); }};
     }

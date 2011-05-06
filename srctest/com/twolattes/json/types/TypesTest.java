@@ -8,13 +8,17 @@ import static com.twolattes.json.Json.number;
 import static com.twolattes.json.Json.object;
 import static com.twolattes.json.Json.string;
 import static com.twolattes.json.TwoLattes.createMarshaller;
+import static java.util.Collections.singleton;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -224,6 +228,21 @@ public class TypesTest {
         .withType(IdJsonType.class)
         .withType(ArrayJsonType.class)
         .createMarshaller(EntityRequiringTypeRegistration2.class);
+  }
+
+  @Test
+  public void typesRegistration6() throws Exception {
+    Json.Object o = (Json.Object) TwoLattes
+        .createMarshaller(EntityRequiringTypeRegistration3.class)
+        .marshall(new EntityRequiringTypeRegistration3() {{
+          this.ids = singleton(new Id<EntityRequiringTypeRegistration3>(3));
+          this.uriMap = new HashMap<Id<Long>, Set<URI>>();
+        }});
+    assertEquals(
+        object(
+            string("ids"), array(number(3)),
+            string("uriMap"), object()),
+        o);
   }
 
 }

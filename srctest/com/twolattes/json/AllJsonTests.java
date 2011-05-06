@@ -37,7 +37,7 @@ import com.twolattes.json.visibility2.Visibility2Test;
   EntityUnmarshallingTest.class,
   JavaTypeMarshallingTest.class,
   JavaTypeUnmarshallingTest.class,
-  EntityClassVisitorTest.class,
+  EntityClassDescriptorBuilderTest.class,
   TypesTest.class,
   URLTypeTest.class,
   Inheritance1Test.class,
