@@ -14,6 +14,7 @@ import static com.twolattes.json.Json.object;
 import static com.twolattes.json.Json.string;
 import static com.twolattes.json.OrgJsonAssert.assertJsonEquals;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 
@@ -23,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -319,6 +321,41 @@ public class JsonTest {
     assertEquals(
         array(number(89), number(8.7), number(42)),
         fromString("[89,8.7,4.2e1]"));
+  }
+
+  @Test
+  public void constructArray1a() throws Exception {
+    assertEquals("[]", array().toString());
+  }
+
+  @Test
+  public void constructArray1b() throws Exception {
+    assertEquals("[]", array(Collections.<Json.Value>emptyList()).toString());
+  }
+
+  @Test
+  public void constructArray2a() throws Exception {
+    assertEquals("[1]", array(number(1)).toString());
+  }
+
+  @Test
+  public void constructArray2b() throws Exception {
+    assertEquals("[1]", array(asList((Json.Value) number(1))).toString());
+  }
+
+  @Test
+  public void constructArray3a() throws Exception {
+    assertEquals("[null,true,{}]", array(NULL, TRUE, object()).toString());
+  }
+
+  @Test
+  public void constructArray3b() throws Exception {
+    assertEquals("[null,true,{}]", array(asList(NULL, TRUE, object())).toString());
+  }
+
+  @Test
+  public void constructArray4() throws Exception {
+    assertEquals("[[{}]]", array(array(object())).toString());
   }
 
   @Test

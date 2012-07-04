@@ -11,9 +11,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 /**
  * JSON values.
@@ -222,6 +222,16 @@ public final class Json {
       for (Json.Value value : values) {
         delegate.add(value);
       }
+    }
+
+    public ArrayImpl(Iterable<Json.Value> values) {
+      for (Json.Value value : values) {
+        delegate.add(value);
+      }
+    }
+
+    public ArrayImpl(Json.Array value) {
+      delegate.add(value);
     }
 
     public void write(Writer writer) throws IOException {
@@ -891,6 +901,14 @@ public final class Json {
 
   public static Json.Array array(Json.Value... values) {
     return new Json.ArrayImpl(values);
+  }
+
+  public static Json.Array array(Iterable<Json.Value> values) {
+    return new Json.ArrayImpl(values);
+  }
+
+  public static Json.Array array(Json.Array value) {
+    return new Json.ArrayImpl(value);
   }
 
   public static Json.Object object() {
