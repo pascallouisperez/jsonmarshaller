@@ -152,18 +152,6 @@ public final class Json {
       return visitor.caseObject(this);
     }
 
-    public void clear() {
-      delegate.clear();
-    }
-
-    public boolean containsKey(java.lang.Object key) {
-      return delegate.containsKey(key);
-    }
-
-    public boolean containsValue(java.lang.Object value) {
-      return delegate.containsValue(value);
-    }
-
     @Override
     public boolean equals(java.lang.Object o) {
       if (!(o instanceof Json.Object)) {
