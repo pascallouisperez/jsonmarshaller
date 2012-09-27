@@ -40,7 +40,7 @@ import com.twolattes.json.types.JsonType;
  */
 class DescriptorFactory {
 
-  private static final Map<Type, Descriptor<?, ?>> baseTypes = makeMap();
+  static final Map<Type, Descriptor<?, ?>> baseTypes = makeMap();
   private static Map<Type, Descriptor<?, ?>> makeMap() {
     Map<Type, Descriptor<?, ?>> map = new HashMap<Type, Descriptor<?, ?>>();
     map.put(Integer.TYPE, INT_DESC);

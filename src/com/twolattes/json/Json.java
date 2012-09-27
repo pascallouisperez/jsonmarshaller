@@ -911,6 +911,14 @@ public final class Json {
     return new Json.ArrayImpl(value);
   }
 
+  public static Json.Array array(java.lang.Object... values) {
+    Json.Value[] jsonValues = new Json.Value[values.length];
+    for (int i = 0; i < values.length; i++) {
+      jsonValues[i] = value(values[i]);
+    }
+    return new Json.ArrayImpl(jsonValues);
+  }
+
   public static Json.Object object() {
     return new Json.ObjectImpl();
   }
@@ -1030,6 +1038,24 @@ public final class Json {
     return o;
   }
 
+  public static Json.Object object(java.lang.Object... keyValuePairs) {
+    if (keyValuePairs.length % 2 != 0) {
+      throw new IllegalArgumentException("Number of arguments must be even");
+    }
+    Json.Object o = object();
+    for (int i = 0; i < keyValuePairs.length; i += 2) {
+      java.lang.Object key = keyValuePairs[i];
+      if (key instanceof java.lang.String) {
+        o.put(string((java.lang.String) key), value(keyValuePairs[i + 1]));
+      } else if (key instanceof Json.String) {
+        o.put((Json.String) key, value(keyValuePairs[i + 1]));
+      } else {
+        throw new IllegalArgumentException("Keys must be strings");
+      }
+    }
+    return o;
+  }
+
   public static Json.Number number(short number) {
     return new Json.NumberImplShort(number);
   }
@@ -1056,6 +1082,23 @@ public final class Json {
 
   public static Json.String string(java.lang.String string) {
     return new Json.StringImpl(string);
+  }
+
+  private static <T> Json.Value value(T object) {
+    if (object == null) {
+      return NULL;
+    }
+    @SuppressWarnings("unchecked")
+    Descriptor<T, ?> descriptor = (Descriptor<T, ?>)
+      DescriptorFactory.baseTypes.get(object.getClass());
+    if (descriptor != null) {
+      return descriptor.marshall(object, null);
+    } else if (object instanceof Json.Value) {
+      return (Json.Value) object;
+    } else {
+      throw new IllegalArgumentException(
+          "Cannot auto-convert " + object.getClass() + " to Json.Value");
+    }
   }
 
   /** See {@link #TRUE}, {@link #FALSE}. */

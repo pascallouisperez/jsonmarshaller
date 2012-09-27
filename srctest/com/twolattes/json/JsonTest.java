@@ -15,6 +15,7 @@ import static com.twolattes.json.Json.string;
 import static com.twolattes.json.OrgJsonAssert.assertJsonEquals;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 
@@ -344,6 +345,11 @@ public class JsonTest {
   }
 
   @Test
+  public void constructArray2c() throws Exception {
+    assertEquals("[1]", array(1).toString());
+  }
+
+  @Test
   public void constructArray3a() throws Exception {
     assertEquals("[null,true,{}]", array(NULL, TRUE, object()).toString());
   }
@@ -354,8 +360,35 @@ public class JsonTest {
   }
 
   @Test
+  public void constructArray3c() throws Exception {
+    assertEquals("[null,true,{}]", array(null, true, object()).toString());
+  }
+
+  @Test
   public void constructArray4() throws Exception {
     assertEquals("[[{}]]", array(array(object())).toString());
+  }
+
+  @Test
+  public void arrayFromObjects1() throws Exception {
+    assertEquals(
+        "[3.141592653589793,3,\"foo\",[true,null]]",
+        array(Math.PI, (byte) 3, "foo", array(true, null)).toString());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void arrayFromObjects2() throws Exception {
+    array(1, new Object[0]);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void arrayFromObjects3() throws Exception {
+    array(1, asList());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void arrayFromObjects4() throws Exception {
+    array(1, emptyMap());
   }
 
   @Test
@@ -506,25 +539,47 @@ public class JsonTest {
   }
 
   @Test
-  public void objectFromPairs1() {
+  public void objectFromValuePairs1() {
     assertEquals(object(), object(new Json.Value[0]));
   }
 
   @Test
-  public void objectFromPairs2() {
+  public void objectFromValuePairs2() {
     assertEquals(
         object(string("a"), number(1)),
         object(new Json.Value[] { string("a"), number(1) }));
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void objectFromPairs3() {
+  public void objectFromValuePairs3() {
     object(new Json.Value[] { string("a") });
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void objectFromPairs4() {
+  public void objectFromValuePairs4() {
     object(new Json.Value[] { number(1), number(1) });
+  }
+
+  @Test
+  public void objectFromObjectPairs1() {
+    assertEquals(object(), object(new Object[0]));
+  }
+
+  @Test
+  public void objectFromObjectPairs2() {
+    assertEquals(
+        object(string("a"), number(1)),
+        object("a", 1));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void objectFromObjectPairs3() {
+    object("a");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void objectFromObjectPairs4() {
+    object(1, 1);
   }
 
   @Test
